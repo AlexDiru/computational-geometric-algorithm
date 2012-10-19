@@ -7,6 +7,7 @@ namespace computational_geometry_algorithm
 {
     public static class ConvexHull
     {
+        /*
         public static List<Point2D> TopologicalSort(List<Point2D> Points)
         {
             //Group by x values
@@ -25,29 +26,41 @@ namespace computational_geometry_algorithm
 
             return newPoints;
 
-        }
+        }*/
 
+        /// <summary>
+        /// Performs the ConvexHull algorithm on a set of points
+        /// Algorithm adapted from pseudocode from Dr Muniyappa Manjunathaiah
+        /// </summary>
         public static List<Point2D> Solve(List<Point2D> points)
         {
-            //Sort points by x
+            //Sort points by x coordinates
             var sortedPoints = points.OrderBy(p => p.X).ToList();
 
+            //Calculate the upper and lower hull of the points
             var upperHull = UpperHull(sortedPoints);
             var lowerHull = LowerHull(sortedPoints);
 
-            //Merge hulls
+            //Remove the first and last point in the lower hull
             lowerHull.RemoveAt(0);
             lowerHull.RemoveAt(lowerHull.Count - 1);
 
+            //Union both the hulls to get the convex hull
             return UnionHulls(lowerHull, upperHull);
         }
 
+        /// <summary>
+        /// Given two lists of points, merges them and removes any duplicate values
+        /// </summary>
         private static List<Point2D> UnionHulls(List<Point2D> lowerHull, List<Point2D> upperHull)
         {
             lowerHull.AddRange(upperHull);
             return lowerHull.Distinct().ToList();
         }
 
+        /// <summary>
+        /// Calculates the upper hull
+        /// </summary>
         private static List<Point2D> UpperHull(List<Point2D> points)
         {
             List<Point2D> upperHull = new List<Point2D>();
@@ -57,8 +70,11 @@ namespace computational_geometry_algorithm
             for (int i = 2; i < points.Count; i++)
             {
                 upperHull.Add(points[i]);
+
+                //While upper hull has more than two points and the last three points do not make a right turn
                 while (upperHull.Count > 2 && NoRightTurn(upperHull[upperHull.Count - 1], upperHull[upperHull.Count - 2], upperHull[upperHull.Count - 3]))
                 {
+                    //Delete the middle of the 3 above points
                     upperHull.RemoveAt(upperHull.Count - 2);
                 }
             }
@@ -66,6 +82,11 @@ namespace computational_geometry_algorithm
             return upperHull;
         }
 
+        /// <summary>
+        /// Calculates the lower hull
+        /// </summary>
+        /// <param name="points"></param>
+        /// <returns></returns>
         private static List<Point2D> LowerHull(List<Point2D> points)
         {
             List<Point2D> lowerHull = new List<Point2D>();
@@ -101,44 +122,14 @@ namespace computational_geometry_algorithm
             return (b.X - a.X) * (c.Y - a.Y) - (b.Y - a.Y)*(c.X - a.X);
         }
 
-        public static void Draw(List<Point2D> points)
+        public static Boolean Contains(List<Point2D> points, Point2D point)
         {
-            //Group by y values
-            var groupedPoints = points.GroupBy(p => p.Y);
-
-            //Order groups by y values
-            groupedPoints = groupedPoints.OrderBy(gp => gp.First().Y);
-
-            int currentRow = groupedPoints.Last().First().Y + 1;
-
-            for (int i = groupedPoints.Count() - 1; i >= 0; i--)
+            for (int i = 0; i < points.Count; i++)
             {
-
-                var newGroup = groupedPoints.ToList()[i].OrderBy(g => g.X);
-
-                
-                //Row check
-                while (currentRow != newGroup.First().Y + 1)
-                {
-                    Console.Write("\n");
-                    currentRow--;
-                }
-                currentRow = newGroup.First().Y;
-
-                int currentPositionInRow = 0;
-
-                foreach (var point in newGroup)
-                {
-                    for (int r = currentPositionInRow; r < point.X; r++)
-                    {
-                        Console.Write(" ");
-                    }
-                    Console.Write("#");
-                    currentPositionInRow = point.X + 1;
-                }
-                Console.Write("\n");
+                if (points[i].X == point.X && points[i].Y == point.Y)
+                    return true;
             }
-
+            return false;
         }
     }
 }

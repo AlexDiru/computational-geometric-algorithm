@@ -9,28 +9,7 @@ namespace computational_geometry_algorithm
     {
         static void Main(string[] args)
         {
-            List<Point2D> p = new List<Point2D>();
-            p.Add(new Point2D(0, 3));
-            p.Add(new Point2D(3, 0));
-            p.Add(new Point2D(10, 3));
-            p.Add(new Point2D(3, 5));
-            p.Add(new Point2D(10, 2));
-            p.Add(new Point2D(11, 2));
-            p.Add(new Point2D(9, 6));
-            p.Add(new Point2D(13, 4));
-            p.Add(new Point2D(4, 5));
-            p.Add(new Point2D(4, 11));
-            p.Add(new Point2D(5, 4));
-            p.Add(new Point2D(6, 5));
-            p.Add(new Point2D(7, 6));
-
-            ConvexHull.Draw(p);
-
-            Console.WriteLine("Convex Hulled");
-
-            p = ConvexHull.Solve(p);
-
-            ConvexHull.Draw(p);
+            ConvexHullTesting.RandomisedTests(5,10, 20, 20);
         }
     }
 }
