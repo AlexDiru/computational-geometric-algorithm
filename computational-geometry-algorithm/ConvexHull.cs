@@ -27,13 +27,25 @@ namespace computational_geometry_algorithm
 
         }
 
-        public static void Solve(List<Point2D> points)
+        public static List<Point2D> Solve(List<Point2D> points)
         {
             //Sort points by x
-            var sortedPoints = points.OrderBy(p => p.X);
+            var sortedPoints = points.OrderBy(p => p.X).ToList();
 
             var upperHull = UpperHull(sortedPoints);
             var lowerHull = LowerHull(sortedPoints);
+
+            //Merge hulls
+            lowerHull.RemoveAt(0);
+            lowerHull.RemoveAt(lowerHull.Count - 1);
+
+            return UnionHulls(lowerHull, upperHull);
+        }
+
+        private static List<Point2D> UnionHulls(List<Point2D> lowerHull, List<Point2D> upperHull)
+        {
+            lowerHull.AddRange(upperHull);
+            return lowerHull.Distinct().ToList();
         }
 
         private static List<Point2D> UpperHull(List<Point2D> points)
@@ -45,9 +57,9 @@ namespace computational_geometry_algorithm
             for (int i = 2; i < points.Count; i++)
             {
                 upperHull.Add(points[i]);
-                while (upperHull.Count > 2 && NoRightTurn(upperHull[0], upperHull[1], upperHull[2]))
+                while (upperHull.Count > 2 && NoRightTurn(upperHull[upperHull.Count - 1], upperHull[upperHull.Count - 2], upperHull[upperHull.Count - 3]))
                 {
-                    upperHull.RemoveAt(1);
+                    upperHull.RemoveAt(upperHull.Count - 2);
                 }
             }
 
@@ -59,6 +71,17 @@ namespace computational_geometry_algorithm
             List<Point2D> lowerHull = new List<Point2D>();
             lowerHull.Add(points.Last());
             lowerHull.Add(points[points.Count - 2]);
+
+            for (int i = points.Count - 3; i >= 0; i--)
+            {
+                lowerHull.Add(points[i]);
+                while (lowerHull.Count > 2 && NoRightTurn(lowerHull[lowerHull.Count - 1], lowerHull[lowerHull.Count - 2], lowerHull[lowerHull.Count - 3]))
+                {
+                    lowerHull.RemoveAt(lowerHull.Count - 2);
+                }
+            }
+
+            return lowerHull;
         }
 
         /// <summary>
@@ -68,9 +91,14 @@ namespace computational_geometry_algorithm
         /// <param name="b"></param>
         /// <param name="c"></param>
         /// <returns></returns>
-        private Boolean NoRightTurn(Point2D a, Point2D b, Point2D c)
+        private static Boolean NoRightTurn(Point2D a, Point2D b, Point2D c)
         {
+            return CrossProduct(a, b, c) < 0;
+        }
 
+        private static Int32 CrossProduct(Point2D a, Point2D b, Point2D c)
+        {
+            return (b.X - a.X) * (c.Y - a.Y) - (b.Y - a.Y)*(c.X - a.X);
         }
 
         public static void Draw(List<Point2D> points)

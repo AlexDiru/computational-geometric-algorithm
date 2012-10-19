@@ -24,8 +24,11 @@ namespace computational_geometry_algorithm
             p.Add(new Point2D(6, 5));
             p.Add(new Point2D(7, 6));
 
+            ConvexHull.Draw(p);
 
-            p = ConvexHull.TopologicalSort(p);
+            Console.WriteLine("Convex Hulled");
+
+            p = ConvexHull.Solve(p);
 
             ConvexHull.Draw(p);
         }
