@@ -85,8 +85,6 @@ namespace computational_geometry_algorithm
         /// <summary>
         /// Calculates the lower hull
         /// </summary>
-        /// <param name="points"></param>
-        /// <returns></returns>
         private static List<Point2D> LowerHull(List<Point2D> points)
         {
             List<Point2D> lowerHull = new List<Point2D>();
@@ -108,28 +106,131 @@ namespace computational_geometry_algorithm
         /// <summary>
         /// Whether three points make a right turn
         /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <param name="c"></param>
-        /// <returns></returns>
         private static Boolean NoRightTurn(Point2D a, Point2D b, Point2D c)
         {
             return CrossProduct(a, b, c) < 0;
         }
 
+        /// <summary>
+        /// Calculates the cross product of 3 2d points
+        /// </summary>
         private static Int32 CrossProduct(Point2D a, Point2D b, Point2D c)
         {
             return (b.X - a.X) * (c.Y - a.Y) - (b.Y - a.Y)*(c.X - a.X);
         }
 
-        public static Boolean Contains(List<Point2D> points, Point2D point)
+        /// <summary>
+        /// Gets the center of a polygon
+        /// </summary>
+        public static Point2D GetPolygonCentre(List<Point2D> polygon)
         {
-            for (int i = 0; i < points.Count; i++)
+            Int32 xTotal = 0;
+            Int32 yTotal = 0;
+
+            foreach (Point2D point in polygon)
             {
-                if (points[i].X == point.X && points[i].Y == point.Y)
-                    return true;
+                xTotal += point.X;
+                yTotal += point.Y;
             }
-            return false;
+
+            //Return the average of the points
+            return new Point2D(xTotal / polygon.Count, yTotal / polygon.Count);
+        }
+
+        /// <summary>
+        /// Organises a list so it can be traversed clockwise or counterclockwise
+        /// Uses crossproduct - quite inefficient algorithm O(n^2)
+        /// If time, speed this up
+        /// Algorithm from http://gamedev.stackexchange.com/questions/13229/sorting-array-of-points-in-clockwise-order
+        /// </summary>
+        /// <param name="points"></param>
+        /// <returns></returns>
+        public static List<Point2D> OrganiseClockwise(List<Point2D> points)
+        {
+            //Calculate centre of points
+            Point2D centre = GetPolygonCentre(points);
+
+            //Assigns the points a float priority which is calculated later
+            //Must map to a list on the off chance two (or more) points have the same key
+            Dictionary<float, List<Point2D>> priorityPoints = new Dictionary<float, List<Point2D>>();
+
+            foreach (var point in points)
+            {
+                float priorityValue = (float)Math.Atan2(Convert.ToDouble(point.Y - centre.Y), Convert.ToDouble(point.X - centre.X));
+
+                if (!priorityPoints.ContainsKey(priorityValue))
+                {
+                    priorityPoints.Add(priorityValue, new List<Point2D>());
+                }
+                priorityPoints[priorityValue].Add(point);
+            }
+
+            //Sort by priority value
+            priorityPoints.OrderBy(pp => pp.Key);
+
+            //Convert dictionary back a single list
+            var sortedList = new List<Point2D>();
+            foreach (var list in priorityPoints.Values)
+            {
+                sortedList.AddRange(list);
+            }
+
+            return sortedList;
+        }
+
+        /// <summary>
+        /// Given a convex hull and a start point and end point which are points on the convex hull
+        /// Traverses the convex hull both clockwise and counterwise and returns the list of points with the minimum length
+        /// </summary>
+        public List<Point2D> GetMinimumPolygonChain(List<Point2D> convexHull, Point2D start, Point2D end)
+        {
+            var circularHull = OrganiseClockwise(convexHull);
+
+            List<Point2D> clockwiseChain = new List<Point2D>();
+            List<Point2D> counterClockwiseChain = new List<Point2D>();
+
+            //Clockwise chain
+            //Start at the start index
+            Int32 currentIndex = circularHull.IndexOf(start);
+            
+            //While the end isn't reached
+            while (!DataSet.Equals(circularHull[currentIndex], end))
+            {
+                //Add the point to the polygon chain
+                clockwiseChain.Add(circularHull[currentIndex]);
+
+                //Go to next point
+                if (currentIndex < circularHull.Count - 1)
+                    currentIndex++;
+                else
+                    currentIndex = 0;
+            }
+
+            //Add the end
+            clockwiseChain.Add(end);
+
+            //Counterclockwise chain
+            //Start at the start index
+            currentIndex = circularHull.IndexOf(start);
+
+            //While the end isn't reached
+            while (!DataSet.Equals(circularHull[currentIndex], end))
+            {
+                //Add the point to the polygon chain
+                counterClockwiseChain.Add(circularHull[currentIndex]);
+
+                //Go to prev point
+                if (currentIndex > 0)
+                    currentIndex--;
+                else
+                    currentIndex = circularHull.Count - 1;
+            }
+
+            //Add the end
+            counterClockwiseChain.Add(end);
+
+            //Return the shortest chain
+            return counterClockwiseChain.Count > clockwiseChain.Count ? clockwiseChain : counterClockwiseChain;
         }
     }
 }
