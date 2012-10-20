@@ -15,6 +15,15 @@ namespace computational_geometry_algorithm
         /// </summary>
         public static void Draw(List<Point2D> points)
         {
+            //Assign priority characters
+            //a = top of list, z = end of list
+            Dictionary<Point2D, char> priority = new Dictionary<Point2D, char>();
+            char current = 'a';
+            foreach (var point in points)
+            {
+                priority.Add(point, current++);
+            }
+
             //Group by y values
             var groupedPoints = points.GroupBy(p => p.Y);
 
@@ -45,7 +54,7 @@ namespace computational_geometry_algorithm
                     {
                         Console.Write(" ");
                     }
-                    Console.Write("#");
+                    Console.Write(priority[point]);
                     currentPositionInRow = point.X + 1;
                 }
                 Console.Write("\n");

@@ -34,6 +34,13 @@ namespace computational_geometry_algorithm
                               "    b        b                 c              c    \n" +
                               "   b                 b     B                       \n");
 
+            foreach (var polygon in map.Polygons.Values)
+            {
+                var s = ConvexHull.OrganiseClockwise(ConvexHull.Solve(polygon));
+                UserInterface.Draw(s);
+                Console.WriteLine("---------------------");
+            }
+
             return;
         }
     }

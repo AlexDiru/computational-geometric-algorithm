@@ -142,9 +142,8 @@ namespace computational_geometry_algorithm
         /// Uses crossproduct - quite inefficient algorithm O(n^2)
         /// If time, speed this up
         /// Algorithm from http://gamedev.stackexchange.com/questions/13229/sorting-array-of-points-in-clockwise-order
+        /// Only works on convex hulls!!
         /// </summary>
-        /// <param name="points"></param>
-        /// <returns></returns>
         public static List<Point2D> OrganiseClockwise(List<Point2D> points)
         {
             //Calculate centre of points
@@ -182,7 +181,7 @@ namespace computational_geometry_algorithm
         /// Given a convex hull and a start point and end point which are points on the convex hull
         /// Traverses the convex hull both clockwise and counterwise and returns the list of points with the minimum length
         /// </summary>
-        public List<Point2D> GetMinimumPolygonChain(List<Point2D> convexHull, Point2D start, Point2D end)
+        public static List<Point2D> GetMinimumPolygonChain(List<Point2D> convexHull, Point2D start, Point2D end)
         {
             var circularHull = OrganiseClockwise(convexHull);
 

@@ -13,7 +13,7 @@ namespace computational_geometry_algorithm
     public class Map
     {
         Point2D Start, Mid, End;
-        Dictionary<char,List<Point2D>> Polygons; //Maps a character to the polygon
+        public Dictionary<char,List<Point2D>> Polygons; //Maps a character to the polygon
 
         public Map(String map)
         {
@@ -71,6 +71,7 @@ namespace computational_geometry_algorithm
             //If the mid point exists we must go to it first
             if (Mid != null)
             {
+                
             }
         }
     }
