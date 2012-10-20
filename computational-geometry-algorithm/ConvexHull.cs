@@ -7,27 +7,6 @@ namespace computational_geometry_algorithm
 {
     public static class ConvexHull
     {
-        /*
-        public static List<Point2D> TopologicalSort(List<Point2D> Points)
-        {
-            //Group by x values
-            var groupedPoints = Points.GroupBy(p => p.X);
-
-            //Order groups by x values
-            groupedPoints = groupedPoints.OrderBy(gp => gp.First().X);
-
-            List<Point2D> newPoints = new List<Point2D>();
-
-            foreach (var group in groupedPoints)
-            {
-                //Group each group by y values
-                newPoints.AddRange(group.OrderBy(g => g.Y));
-            }
-
-            return newPoints;
-
-        }*/
-
         /// <summary>
         /// Performs the ConvexHull algorithm on a set of points
         /// Algorithm adapted from pseudocode from Dr Muniyappa Manjunathaiah
@@ -178,7 +157,7 @@ namespace computational_geometry_algorithm
         }
 
         /// <summary>
-        /// Gets the distance between two points
+        /// Gets the Manhattan distance between two points
         /// </summary>
         private static float GetDistance(Point2D a, Point2D b)
         {
@@ -186,11 +165,8 @@ namespace computational_geometry_algorithm
         }
 
         /// <summary>
-        /// Given a polygon chain, inserts points in it to make each point border another point
-        /// i.e. #       #    =>    ########
+        /// Given a polygon chain, calculates the total distance if it is followed
         /// </summary>
-        /// <param name="polygonChain"></param>
-        /// <returns></returns>
         public static float GetPolygonChainDistance(List<Point2D> polygonChain)
         {
             float totalDistance = 0;

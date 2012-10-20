@@ -37,11 +37,11 @@ namespace computational_geometry_algorithm
             {
                 var pointList = GenerateRandomPolygon(maxPointNumber, maxX, maxY);
 
-                Console.WriteLine(String.Format("Test #{0} | Point Number = {1}",i+1, pointList.Count));
+                Console.WriteLine(String.Format("\nTest #{0} | Point Number = {1}\n",i+1, pointList.Count));
                 UserInterface.Draw(pointList);
 
                 pointList = ConvexHull.Solve(pointList);
-                Console.WriteLine("Convex Hull | Point Number = " + pointList.Count);
+                Console.WriteLine("\nConvex Hull | Point Number = " + pointList.Count + "\n");
                 UserInterface.Draw(pointList);
             }
         }

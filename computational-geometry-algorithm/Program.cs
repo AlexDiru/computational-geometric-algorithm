@@ -9,6 +9,7 @@ namespace computational_geometry_algorithm
     {
         static void Main(string[] args)
         {
+
             //.RandomisedTests(5,10, 20, 20);
 
             /*
@@ -34,10 +35,11 @@ namespace computational_geometry_algorithm
                               "    b        b                 c              c    \n" +
                               "   b                 b     B                       \n");
 
-            map.SolveMap();
-            */
+            map.SolveMap*/
 
-            ConvexHullTesting.PathPlannerSingleObstacleRandomisedTest(1, 20, 20, 20);
+            ConvexHullTesting.RandomisedTests(3, 20, 20, 20);
+
+            //ConvexHullTesting.PathPlannerSingleObstacleRandomisedTest(1, 20, 20, 20);
 
             
         }

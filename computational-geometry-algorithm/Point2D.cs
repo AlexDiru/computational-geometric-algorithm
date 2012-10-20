@@ -5,6 +5,9 @@ using System.Text;
 
 namespace computational_geometry_algorithm
 {
+    /// <summary>
+    /// Represents a 2D coordinate
+    /// </summary>
     public class Point2D
     {
         public Int32 X, Y;
