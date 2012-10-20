@@ -178,6 +178,30 @@ namespace computational_geometry_algorithm
         }
 
         /// <summary>
+        /// Gets the distance between two points
+        /// </summary>
+        private static float GetDistance(Point2D a, Point2D b)
+        {
+            return (float)Math.Sqrt((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y));
+        }
+
+        /// <summary>
+        /// Given a polygon chain, inserts points in it to make each point border another point
+        /// i.e. #       #    =>    ########
+        /// </summary>
+        /// <param name="polygonChain"></param>
+        /// <returns></returns>
+        public static float GetPolygonChainDistance(List<Point2D> polygonChain)
+        {
+            float totalDistance = 0;
+            for (int i = 0; i < polygonChain.Count - 1; i++)
+            {
+                totalDistance += GetDistance(polygonChain[i], polygonChain[i + 1]);
+            }
+            return totalDistance;
+        }
+
+        /// <summary>
         /// Given a convex hull and a start point and end point which are points on the convex hull
         /// Traverses the convex hull both clockwise and counterwise and returns the list of points with the minimum length
         /// </summary>
@@ -229,7 +253,7 @@ namespace computational_geometry_algorithm
             counterClockwiseChain.Add(end);
 
             //Return the shortest chain
-            return counterClockwiseChain.Count > clockwiseChain.Count ? clockwiseChain : counterClockwiseChain;
+            return ConvexHull.GetPolygonChainDistance(counterClockwiseChain) > ConvexHull.GetPolygonChainDistance(clockwiseChain) ? clockwiseChain : counterClockwiseChain;
         }
     }
 }

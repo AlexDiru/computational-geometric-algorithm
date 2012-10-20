@@ -21,7 +21,7 @@ namespace computational_geometry_algorithm
             ConvexHullTesting.TestData(dat);
              * */
 
-            Map map = new Map("                       a      a                    \n" +
+            /*Map map = new Map("                       a      a                    \n" +
                               "                                                   \n" +
                               "                       a              a            \n" + 
                               "               a                      a            \n" +
@@ -34,13 +34,18 @@ namespace computational_geometry_algorithm
                               "    b        b                 c              c    \n" +
                               "   b                 b     B                       \n");
 
-            foreach (var polygon in map.Polygons.Values)
-            {
-                var s = ConvexHull.OrganiseClockwise(ConvexHull.Solve(polygon));
-                UserInterface.Draw(s);
-                Console.WriteLine("---------------------");
-            }
+            map.SolveMap();
+            */
 
+            Map map = new Map("                       a      a                    \n" +
+                              "          A                                        \n" +
+                              "                       a              a            \n" +
+                              "               a                      a     C      \n" +
+                              "                     a          a                  \n" +
+                              "                  a             a                  \n" +
+                              "                                                   \n");
+
+            map.SolveMap();
             return;
         }
     }

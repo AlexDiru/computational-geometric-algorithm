@@ -21,6 +21,9 @@ namespace computational_geometry_algorithm
             ImportFromString(map);
         }
 
+        /// <summary>
+        /// Inputs the map from a string
+        /// </summary>
         public void ImportFromString(String data)
         {
             //Split data by lines
@@ -66,13 +69,63 @@ namespace computational_geometry_algorithm
             }
         }
 
+        /// <summary>
+        /// Finds the quickest path avoiding the polygons given a start and end point
+        /// Excludes start and end from the path
+        /// Need to check for collisions with other polygons
+        /// </summary>
+        private List<Point2D> FindQuickestPath(Point2D start, Point2D end)
+        {
+            List<Point2D> shortestPath = new List<Point2D>();
+            float shortestDistance = float.MaxValue;
+            Boolean pathFound = false;
+
+            foreach (var polygon in Polygons.Values)
+            {
+                //Calcualte convex hull with start and end point and polygon
+                var newPolygon = new List<Point2D>();
+                newPolygon.Add(start);
+                newPolygon.AddRange(polygon);
+                newPolygon.Add(end);
+
+                newPolygon = ConvexHull.GetMinimumPolygonChain(ConvexHull.Solve(newPolygon), start, end);
+                float distance = ConvexHull.GetPolygonChainDistance(newPolygon);
+
+                //If we haven't found a path yet or this path is the shortest
+                if (!pathFound || distance < shortestDistance)
+                {
+                    newPolygon.Remove(start);
+                    newPolygon.Remove(end);
+                    shortestDistance = distance;
+                    shortestPath = newPolygon;
+                    pathFound = true;
+                }
+            }
+
+            return shortestPath;
+        }
+
         public void SolveMap()
         {
+            List<Point2D> path = new List<Point2D>();
+            path.Add(Start);
+
+            var start = Start;
+
             //If the mid point exists we must go to it first
             if (Mid != null)
             {
-                
+                path.AddRange(FindQuickestPath(Start, Mid));
+                path.Add(Mid);
+                start = Mid;
             }
+
+            //Go to the end
+            path.AddRange(FindQuickestPath(start, End));
+            path.Add(End);
+
+            UserInterface.DrawPath(path, Polygons.Values.ToList());
+
         }
     }
 }
