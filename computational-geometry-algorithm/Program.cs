@@ -37,13 +37,7 @@ namespace computational_geometry_algorithm
             map.SolveMap();
             */
 
-            ConvexHullTesting.TestData(DataSet.GetDataFromString(
-                "          #                #           \n" +
-                "                                       \n" +
-                "               #       #               \n" +
-                "         #                  #          \n" +
-                "                  #                    \n" +
-                "             #            #            \n"));
+            ConvexHullTesting.PathPlannerSingleObstacleRandomisedTest(1, 20, 20, 20);
 
             
         }

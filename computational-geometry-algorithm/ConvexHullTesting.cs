@@ -10,13 +10,15 @@ namespace computational_geometry_algorithm
     /// </summary>
     public static class ConvexHullTesting
     {
-        public static List<Point2D> GenerateRandomPolygon(Int32 maxPointNumber, Int32 maxX, Int32 maxY)
+        public static List<Point2D> GenerateRandomPolygon(Int32 maxPointNumber, Int32 maxX, Int32 maxY, Int32 offsetX = 0, Int32 offsetY = 0)
         {
+            Random random = new Random();
+
             //Create points
             List<Point2D> pointList = new List<Point2D>();
             for (int p = 0; p < maxPointNumber; p++)
             {
-                Point2D newPoint = new Point2D(random.Next(maxX), random.Next(maxY));
+                Point2D newPoint = new Point2D(random.Next(maxX)+offsetX, random.Next(maxY)+offsetY);
 
                 if (!DataSet.Contains(pointList, newPoint))
                     pointList.Add(newPoint);
@@ -56,22 +58,29 @@ namespace computational_geometry_algorithm
         public static void PathPlannerSingleObstacleRandomisedTest(Int32 testNumber, Int32 maxPointNumber, Int32 maxX, Int32 maxY)
         {
             //Generate the map 
-            //Must have an empty top and bottom and left and right
-            String generatedMap = "";
 
             Random random = new Random();
 
-            var polygon = GenerateRandomPolygon(maxPointNumber, maxX, maxY);
+            List<List<Point2D>> polygon = new List<List<Point2D>>();
+            polygon.Add(GenerateRandomPolygon(maxPointNumber, maxX, maxY,5, 5));
             
             //Insert polygon into generated Map
-            Int32 polygonWidth = polygon.Max(p => p.X);
-            Int32 polygonHeight = polygon.Max(p => p.Y);
+            Int32 polygonWidth = polygon.First().Max(p => p.X);
+            Int32 polygonHeight = polygon.First().Max(p => p.Y);
             Int32 mapWidth = polygonWidth + 2 + random.Next(10);
             Int32 mapHeight = polygonHeight + 2 + random.Next(10);
-            Int32 leftOffset = mapWidth / 2;
-            Int32 topOffset = mapHeight / 2;
+            Int32 widthOffset = mapWidth - polygonWidth;
+            Int32 heightOffset = mapHeight - polygonHeight;
 
-            for (;;)
+            Point2D start = new Point2D(random.Next(5), random.Next(polygonHeight));
+            Point2D end = new Point2D(random.Next(5) + polygonWidth + 1, random.Next(polygonHeight));
+            Map map = new Map(polygon, start, end);
+
+            UserInterface.DrawMap(start, end, polygon);
+            Console.WriteLine("-------------------");
+            map.SolveMap();
+    
+
         }   
     }
 }

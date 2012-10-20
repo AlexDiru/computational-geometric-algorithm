@@ -11,6 +11,28 @@ namespace computational_geometry_algorithm
     public static class DataSet
     {
         /// <summary>
+        /// Orders a polygon for printing
+        /// Sorts by y, groups by y, sorts by x
+        /// </summary>
+        public static List<Point2D> OrderForPrinting(List<Point2D> polygon)
+        {
+            List<Point2D> sortedPolygon = new List<Point2D>();
+
+            //Group by y values
+            var groupedPoints = polygon.GroupBy(p => p.Y);
+
+            //Order groups by y values
+            groupedPoints = groupedPoints.OrderBy(gp => gp.First().Y);
+
+            int currentRow = groupedPoints.Last().First().Y + 1;
+
+            for (int i = groupedPoints.Count() - 1; i >= 0; i--)
+               sortedPolygon.AddRange(groupedPoints.ToList()[i].OrderBy(g => g.X));
+
+            return sortedPolygon;
+        }
+
+        /// <summary>
         /// Converts a string to 2d point data
         /// # = Polygon Edge
         /// A = Robot Start position

@@ -15,10 +15,25 @@ namespace computational_geometry_algorithm
         Point2D Start, Mid, End;
         public Dictionary<char,List<Point2D>> Polygons; //Maps a character to the polygon
 
-        public Map(String map)
+        public Map()
         {
             Polygons = new Dictionary<char, List<Point2D>>();
+        }
+
+        public Map(String map) : this()
+        {
             ImportFromString(map);
+        }
+
+        public Map(List<List<Point2D>> polygons, Point2D start, Point2D end) : this()
+        {
+            char currentKey = 'a';
+            foreach (var polygon in polygons)
+            {
+                Polygons.Add(currentKey++, polygon);
+            }
+            Start = start;
+            End = end;
         }
 
         /// <summary>
