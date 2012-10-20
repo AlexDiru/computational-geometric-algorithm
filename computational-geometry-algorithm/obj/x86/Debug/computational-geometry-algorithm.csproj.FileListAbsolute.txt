@@ -3,3 +3,8 @@ c:\users\alex\documents\visual studio 2010\Projects\computational-geometry-algor
 c:\users\alex\documents\visual studio 2010\Projects\computational-geometry-algorithm\computational-geometry-algorithm\obj\x86\Debug\ResolveAssemblyReference.cache
 c:\users\alex\documents\visual studio 2010\Projects\computational-geometry-algorithm\computational-geometry-algorithm\obj\x86\Debug\computational-geometry-algorithm.exe
 c:\users\alex\documents\visual studio 2010\Projects\computational-geometry-algorithm\computational-geometry-algorithm\obj\x86\Debug\computational-geometry-algorithm.pdb
+C:\Users\Alex\Documents\Visual Studio 2010\Projects\essential-algorithms\computational-geometry-algorithm\obj\x86\Debug\computational-geometry-algorithm.exe
+C:\Users\Alex\Documents\Visual Studio 2010\Projects\essential-algorithms\computational-geometry-algorithm\obj\x86\Debug\computational-geometry-algorithm.pdb
+C:\Users\Alex\Documents\Visual Studio 2010\Projects\essential-algorithms\computational-geometry-algorithm\bin\Debug\computational-geometry-algorithm.exe
+C:\Users\Alex\Documents\Visual Studio 2010\Projects\essential-algorithms\computational-geometry-algorithm\bin\Debug\computational-geometry-algorithm.pdb
+C:\Users\Alex\Documents\Visual Studio 2010\Projects\essential-algorithms\computational-geometry-algorithm\obj\x86\Debug\ResolveAssemblyReference.cache
