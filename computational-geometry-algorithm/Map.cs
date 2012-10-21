@@ -122,31 +122,25 @@ namespace computational_geometry_algorithm
         /// </summary>
         private List<Point2D> FindQuickestPathSinglePolygon(Point2D start, Point2D end)
         {
+            return FindQuickestPathSpecifiedPolygon(Polygons.Values.First(), start, end);
+        }
+
+        private static List<Point2D> FindQuickestPathSpecifiedPolygon(List<Point2D> polygon, Point2D start, Point2D end)
+        {
             List<Point2D> shortestPath = new List<Point2D>();
-            float shortestDistance = float.MaxValue;
-            Boolean pathFound = false;
 
-            foreach (var polygon in Polygons.Values)
-            {
-                //Calcualte convex hull with start and end point and polygon
-                var newPolygon = new List<Point2D>();
-                newPolygon.Add(start);
-                newPolygon.AddRange(polygon);
-                newPolygon.Add(end);
+            //Calcualte convex hull with start and end point and polygon
+            var newPolygon = new List<Point2D>();
+            newPolygon.Add(start);
+            newPolygon.AddRange(polygon);
+            newPolygon.Add(end);
 
-                newPolygon = ConvexHull.GetMinimumPolygonChain(ConvexHull.Solve(newPolygon), start, end);
-                float distance = ConvexHull.GetPolygonChainDistance(newPolygon);
+            newPolygon = ConvexHull.GetMinimumPolygonChain(ConvexHull.Solve(newPolygon), start, end);
 
-                //If we haven't found a path yet or this path is the shortest
-                if (!pathFound || distance < shortestDistance)
-                {
-                    newPolygon.Remove(start);
-                    newPolygon.Remove(end);
-                    shortestDistance = distance;
-                    shortestPath = newPolygon;
-                    pathFound = true;
-                }
-            }
+            //If we haven't found a path yet or this path is the shortest
+            newPolygon.Remove(start);
+            newPolygon.Remove(end);
+            shortestPath = newPolygon;
 
             return shortestPath;
         }
@@ -159,8 +153,9 @@ namespace computational_geometry_algorithm
         private List<Point2D> FindQuickestPathMultiplePolygons(Point2D start, Point2D end)
         {
             List<Point2D> shortestPath = new List<Point2D>();
-            float shortestDistance = float.MaxValue;
-            Boolean pathFound = false;
+
+            //Maps a path to the polygon it avoids
+            var paths = new Dictionary<List<Point2D>, List<Point2D>>();
 
             foreach (var polygon in Polygons.Values)
             {
@@ -170,21 +165,32 @@ namespace computational_geometry_algorithm
                 newPolygon.AddRange(polygon);
                 newPolygon.Add(end);
 
-                newPolygon = ConvexHull.GetMinimumPolygonChain(ConvexHull.Solve(newPolygon), start, end);
-                float distance = ConvexHull.GetPolygonChainDistance(newPolygon);
-
-                //If we haven't found a path yet or this path is the shortest
-                if (!pathFound || distance < shortestDistance)
-                {
-                    newPolygon.Remove(start);
-                    newPolygon.Remove(end);
-                    shortestDistance = distance;
-                    shortestPath = newPolygon;
-                    pathFound = true;
-                }
+                var path = ConvexHull.GetMinimumPolygonChain(ConvexHull.Solve(newPolygon), start, end);
+                paths.Add(path, polygon);
             }
 
-            return shortestPath;
+            //Get all paths with more than two points
+            var correctPaths = new List<List<Point2D>>();
+            correctPaths = paths.Keys.Where(p => p.Count > 2).ToList();
+
+            if (correctPaths.Count == 0)
+                //All paths go straight from the start to end
+                //Therefore no obstacles are in the way
+                return paths.Values.First();
+
+            if (correctPaths.Count == 1)
+                //Only one path has an obstacle in the way
+                //So only one obstacle is between start and end
+                return correctPaths.First();
+
+            //More than one path with an obstacle in the way is the tricky bit
+            //We must form a convex hull out of each polygon in the way
+            var largeConvexHull = new List<Point2D>();
+            foreach (var path in correctPaths)
+                largeConvexHull.AddRange(paths[path]);
+
+
+            return FindQuickestPathSpecifiedPolygon(largeConvexHull, start, end);
         }
 
         /// <summary>
