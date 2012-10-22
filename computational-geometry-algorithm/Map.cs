@@ -12,8 +12,6 @@ namespace computational_geometry_algorithm
     /// </summary>
     public class Map 
     {
-        public GraphicalUserInterface gui;
-
         // Start - represented by A on the map
         // Mid - represented by B on the map
         // End - represented by C on the map
@@ -45,7 +43,7 @@ namespace computational_geometry_algorithm
         /// Constructor used when a list of polygons and the start and end coordinates are
         /// passed
         /// </summary>
-        public Map(List<List<Point2D>> polygons, Point2D start, Point2D end) : this()
+        public Map(IEnumerable<List<Point2D>> polygons, Point2D start, Point2D end) : this()
         {
             //The sprite of the current polygon
             char currentKey = 'a';
@@ -122,15 +120,13 @@ namespace computational_geometry_algorithm
         /// Finds the quickest path avoiding the polygon given a start and end point
         /// Excludes start and end from the path
         /// </summary>
-        private List<Point2D> FindQuickestPathSinglePolygon(Point2D start, Point2D end)
+        private IEnumerable<Point2D> FindQuickestPathSinglePolygon(Point2D start, Point2D end)
         {
             return FindQuickestPathSpecifiedPolygon(Polygons.Values.First(), start, end);
         }
 
-        private static List<Point2D> FindQuickestPathSpecifiedPolygon(List<Point2D> polygon, Point2D start, Point2D end)
+        private static List<Point2D> FindQuickestPathSpecifiedPolygon(IEnumerable<Point2D> polygon, Point2D start, Point2D end)
         {
-            List<Point2D> shortestPath = new List<Point2D>();
-
             //Calcualte convex hull with start and end point and polygon
             var newPolygon = new List<Point2D>();
             newPolygon.Add(start);
@@ -142,9 +138,7 @@ namespace computational_geometry_algorithm
             //If we haven't found a path yet or this path is the shortest
             newPolygon.Remove(start);
             newPolygon.Remove(end);
-            shortestPath = newPolygon;
-
-            return shortestPath;
+            return newPolygon;
         }
 
         /// <summary>
@@ -152,10 +146,8 @@ namespace computational_geometry_algorithm
         /// Excludes start and end from the path
         /// Need to check for collisions with other polygons
         /// </summary>
-        private List<Point2D> FindQuickestPathMultiplePolygons(Point2D start, Point2D end, GraphicalUserInterface GUI)
+        private IEnumerable<Point2D> FindQuickestPathMultiplePolygons(Point2D start, Point2D end)
         {
-            List<Point2D> shortestPath = new List<Point2D>();
-
             //Maps a path to the polygon it avoids
             var paths = new Dictionary<List<Point2D>, List<Point2D>>();
 
@@ -177,10 +169,7 @@ namespace computational_geometry_algorithm
             }
 
             //Get all paths with more than two points
-            var correctPaths = new List<List<Point2D>>();
-            correctPaths = paths.Keys.Where(p => p.Count > 2).ToList();
-
-            Console.WriteLine("correct paths: " + correctPaths.Count);
+            var correctPaths = paths.Keys.Where(p => p.Count > 2).ToList();
 
             if (correctPaths.Count == 0)
                 //All paths go straight from the start to end
@@ -196,6 +185,7 @@ namespace computational_geometry_algorithm
             //We must form a convex hull out of each polygon in the way
             var blockingPaths = paths.Where(p => p.Key.Count > 2).ToList();
             var majorPolygon = new List<Point2D>();
+
             foreach (var polygon in blockingPaths)
             {
                 majorPolygon = ConvexHull.UnionHulls(majorPolygon, polygon.Value);
@@ -207,9 +197,9 @@ namespace computational_geometry_algorithm
         /// <summary>
         /// Finds the path through the map
         /// </summary>
-        public List<Point2D> SolveMap(GraphicalUserInterface GUI)
+        public List<Point2D> SolveMap()
         {
-            List<Point2D> path = new List<Point2D>();
+            var path = new List<Point2D>();
             path.Add(Start);
 
             var start = Start;
@@ -220,7 +210,7 @@ namespace computational_geometry_algorithm
                 if (Polygons.Count == 1)
                     path.AddRange(FindQuickestPathSinglePolygon(Start, Mid));
                 else
-                    path.AddRange(FindQuickestPathMultiplePolygons(start, Mid, GUI));
+                    path.AddRange(FindQuickestPathMultiplePolygons(start, Mid));
                 
                 path.Add(Mid);
                 start = Mid;
@@ -230,7 +220,7 @@ namespace computational_geometry_algorithm
             if (Polygons.Count == 1)
                 path.AddRange(FindQuickestPathSinglePolygon(Start, End));
             else
-                path.AddRange(FindQuickestPathMultiplePolygons(start, End, GUI));
+                path.AddRange(FindQuickestPathMultiplePolygons(start, End));
             path.Add(End);
 
             return path;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace computational_geometry_algorithm
 {
@@ -28,59 +27,6 @@ namespace computational_geometry_algorithm
             return pointList;
         }
 
-        public static void RandomisedTests(Int32 testNumber, Int32 maxPointNumber, Int32 maxX, Int32 maxY)
-        {
-            Random random = new Random();
-
-            //Iterate tests
-            for (int i = 0; i < testNumber; i++)
-            {
-                var pointList = GenerateRandomPolygon(maxPointNumber, maxX, maxY);
-
-                Console.WriteLine(String.Format("\nTest #{0} | Point Number = {1}\n",i+1, pointList.Count));
-                UserInterface.Draw(pointList);
-
-                pointList = ConvexHull.Solve(pointList);
-                Console.WriteLine("\nConvex Hull | Point Number = " + pointList.Count + "\n");
-                UserInterface.Draw(pointList);
-            }
-        }
-
-        public static void TestData(List<Point2D> pointList)
-        {
-            Console.WriteLine("Original | Point Number = " + pointList.Count);
-            UserInterface.Draw(pointList);
-            pointList = ConvexHull.Solve(pointList);
-            Console.WriteLine("Convex Hull | Point Number = " + pointList.Count);
-            UserInterface.Draw(pointList);
-        }
-
-        public static void PathPlannerSingleObstacleRandomisedTest(Int32 testNumber, Int32 maxPointNumber, Int32 maxX, Int32 maxY)
-        {
-            //Generate the map 
-
-            Random random = new Random();
-
-            List<List<Point2D>> polygon = new List<List<Point2D>>();
-            polygon.Add(GenerateRandomPolygon(maxPointNumber, maxX, maxY,5, 5));
-            
-            //Insert polygon into generated Map
-            Int32 polygonWidth = polygon.First().Max(p => p.X);
-            Int32 polygonHeight = polygon.First().Max(p => p.Y);
-            Int32 mapWidth = polygonWidth + 2 + random.Next(10);
-            Int32 mapHeight = polygonHeight + 2 + random.Next(10);
-            Int32 widthOffset = mapWidth - polygonWidth;
-            Int32 heightOffset = mapHeight - polygonHeight;
-
-            Point2D start = new Point2D(random.Next(5), random.Next(polygonHeight));
-            Point2D end = new Point2D(random.Next(5) + polygonWidth + 1, random.Next(polygonHeight));
-            Map map = new Map(polygon, start, end);
-
-            UserInterface.DrawMap(start, end, polygon);
-            Console.WriteLine("-------------------");
-            map.SolveMap(null);
-        }
-
         /// <summary>
         /// Returns a map which is a single obstacle test
         /// </summary>
@@ -89,7 +35,7 @@ namespace computational_geometry_algorithm
             //Generate the map 
             Random random = new Random();
 
-            List<List<Point2D>> polygon = new List<List<Point2D>>();
+            var polygon = new List<List<Point2D>>();
             polygon.Add(GenerateRandomPolygon(maxPointNumber, maxX, maxY, 2, 2));
 
             //Insert polygon into generated Map
@@ -97,10 +43,8 @@ namespace computational_geometry_algorithm
             Int32 polygonHeight = polygon.First().Max(p => p.Y);
             Int32 mapWidth = polygonWidth + 2;
             Int32 mapHeight = polygonHeight + 2;
-            Int32 widthOffset = mapWidth - polygonWidth;
-            Int32 heightOffset = mapHeight - polygonHeight;
 
-            Point2D start = new Point2D(random.Next(2),Convert.ToInt32( (random.Next(mapHeight)-0.5*mapHeight) + mapHeight/2));
+            Point2D start = new Point2D(random.Next(2),Convert.ToInt32( (random.Next(mapHeight)-0.5*mapHeight) + (float)mapHeight/2));
             Point2D end = new Point2D(mapWidth - random.Next(2), mapHeight - start.Y);
             return new Map(polygon, start, end);
         }
@@ -124,7 +68,7 @@ namespace computational_geometry_algorithm
         /// <summary>
         /// Polygon count must be between 1 and 4
         /// </summary>
-        public static Map GenerateMultipleObstacleMap(Int32 polygonNumber, Int32 maxPointNumber, Int32 maxX, Int32 maxY, GraphicalUserInterface GUI)
+        public static Map GenerateMultipleObstacleMap(Int32 polygonNumber, Int32 maxPointNumber, Int32 maxX, Int32 maxY)
         {
             if (polygonNumber == 1)
                 return GenerateSingleObstacleMap(maxPointNumber, maxX, maxY);
@@ -194,7 +138,7 @@ namespace computational_geometry_algorithm
                 end = new Point2D(2 * maxX + 3, random.Next(maxHeight));
             }
 
-            return new Map(polygons, start, end) { Mid = mid, gui = GUI };
+            return new Map(polygons, start, end) { Mid = mid };
         }
     }
 }

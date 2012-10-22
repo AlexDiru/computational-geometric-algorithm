@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace computational_geometry_algorithm
 {
@@ -21,8 +20,7 @@ namespace computational_geometry_algorithm
             var sortedPoints = new List<Point2D>();
             foreach (var group in groupedPoints)
             {
-                group.OrderBy(g => g.Y);
-                sortedPoints.AddRange(group);
+                sortedPoints.AddRange(group.OrderBy(g => g.Y));
             }
 
             //Calculate the upper and lower hull of the points
@@ -127,14 +125,14 @@ namespace computational_geometry_algorithm
         /// Algorithm from http://gamedev.stackexchange.com/questions/13229/sorting-array-of-points-in-clockwise-order
         /// Only works on convex hulls!!
         /// </summary>
-        public static List<Point2D> OrganiseClockwise(List<Point2D> points)
+        /*public static List<Point2D> OrganiseClockwise(List<Point2D> points)
         {
             //Calculate centre of points
             Point2D centre = GetPolygonCentre(points);
 
             //Assigns the points a float priority which is calculated later
             //Must map to a list on the off chance two (or more) points have the same key
-            Dictionary<float, List<Point2D>> priorityPoints = new Dictionary<float, List<Point2D>>();
+            var priorityPoints = new Dictionary<float, List<Point2D>>();
 
             foreach (var point in points)
             {
@@ -158,7 +156,7 @@ namespace computational_geometry_algorithm
             }
 
             return sortedList;
-        }
+        }*/
 
         /// <summary>
         /// Gets the Manhattan distance between two points
@@ -189,8 +187,8 @@ namespace computational_geometry_algorithm
         {
             var circularHull = convexHull;// OrganiseClockwise(convexHull);
 
-            List<Point2D> clockwiseChain = new List<Point2D>();
-            List<Point2D> counterClockwiseChain = new List<Point2D>();
+            var clockwiseChain = new List<Point2D>();
+            var counterClockwiseChain = new List<Point2D>();
 
             //Clockwise chain
             //Start at the start index
@@ -233,7 +231,7 @@ namespace computational_geometry_algorithm
             counterClockwiseChain.Add(end);
 
             //Return the shortest chain
-            return ConvexHull.GetPolygonChainDistance(counterClockwiseChain) > ConvexHull.GetPolygonChainDistance(clockwiseChain) ? clockwiseChain : counterClockwiseChain;
+            return GetPolygonChainDistance(counterClockwiseChain) > GetPolygonChainDistance(clockwiseChain) ? clockwiseChain : counterClockwiseChain;
         }
     }
 }
