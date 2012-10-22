@@ -79,8 +79,30 @@ namespace computational_geometry_algorithm
             UserInterface.DrawMap(start, end, polygon);
             Console.WriteLine("-------------------");
             map.SolveMap();
-    
+        }
 
+        /// <summary>
+        /// Returns a map which is a single obstacle test
+        /// </summary>
+        public static Map GenerateSingleObstacleMap(Int32 maxPointNumber, Int32 maxX, Int32 maxY)
+        {
+            //Generate the map 
+            Random random = new Random();
+
+            List<List<Point2D>> polygon = new List<List<Point2D>>();
+            polygon.Add(GenerateRandomPolygon(maxPointNumber, maxX, maxY, 2, 2));
+
+            //Insert polygon into generated Map
+            Int32 polygonWidth = polygon.First().Max(p => p.X);
+            Int32 polygonHeight = polygon.First().Max(p => p.Y);
+            Int32 mapWidth = polygonWidth + 2;
+            Int32 mapHeight = polygonHeight + 2;
+            Int32 widthOffset = mapWidth - polygonWidth;
+            Int32 heightOffset = mapHeight - polygonHeight;
+
+            Point2D start = new Point2D(random.Next(2),Convert.ToInt32( (random.Next(mapHeight)-0.5*mapHeight) + mapHeight/2));
+            Point2D end = new Point2D(mapWidth - random.Next(2), mapHeight - start.Y);
+            return new Map(polygon, start, end);
         }   
     }
 }

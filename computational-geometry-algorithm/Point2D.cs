@@ -20,9 +20,9 @@ namespace computational_geometry_algorithm
         }
 
         //Converts a Point2D into System.Drawing.Point
-        public Point Convert(Int32 offsetX = 0, Int32 offsetY = 0)
+        public Point Convert(Int32 offsetX = 0, Int32 offsetY = 0, Int32 sizeMultiplier = 1)
         {
-            return new Point(X*10 + offsetX, Y*10 + offsetY);
+            return new Point(X* sizeMultiplier + offsetX, Y*sizeMultiplier + offsetY);
         }
     }
 }

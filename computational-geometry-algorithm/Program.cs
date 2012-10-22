@@ -42,6 +42,7 @@ namespace computational_geometry_algorithm
 
            
             map.SolveMap();
+        
 
             //Convex Hull algorithm testing
             ConvexHullTesting.RandomisedTests(3, 20, 20, 20);

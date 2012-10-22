@@ -36,13 +36,13 @@ namespace computational_geometry_algorithm
         /// <summary>
         /// Converts a list of Point2D to a list of Point
         /// </summary>
-        public static List<Point> ConvertPolygon(List<Point2D> polygon)
+        public static List<Point> ConvertPolygon(List<Point2D> polygon, Int32 sizeMultiplier = 1)
         {
             List<Point> points = new List<Point>();
 
             foreach (var point in polygon)
             {
-                points.Add(point.Convert());
+                points.Add(point.Convert(0,0,sizeMultiplier));
             }
 
             //points.Add(polygon.First().Convert());

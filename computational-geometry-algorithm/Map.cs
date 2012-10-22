@@ -16,7 +16,7 @@ namespace computational_geometry_algorithm
         // Mid - represented by B on the map
         // End - represented by C on the map
         // Mid can be null, if mid is null the path is A->C, else the path is A->B->C
-        Point2D Start, Mid, End;
+        public Point2D Start, Mid, End;
 
         // Maps a character (sprite) to a polygon, each polygon has a unique sprite to
         // identify it as a separate polygon from the others
@@ -196,7 +196,7 @@ namespace computational_geometry_algorithm
         /// <summary>
         /// Finds the path through the map
         /// </summary>
-        public void SolveMap()
+        public List<Point2D> SolveMap()
         {
             List<Point2D> path = new List<Point2D>();
             path.Add(Start);
@@ -222,8 +222,7 @@ namespace computational_geometry_algorithm
                 path.AddRange(FindQuickestPathMultiplePolygons(start, End));
             path.Add(End);
 
-            UserInterface.DrawPath(path, Polygons.Values.ToList());
-
+            return path;
         }
     }
 }
