@@ -103,6 +103,62 @@ namespace computational_geometry_algorithm
             Point2D start = new Point2D(random.Next(2),Convert.ToInt32( (random.Next(mapHeight)-0.5*mapHeight) + mapHeight/2));
             Point2D end = new Point2D(mapWidth - random.Next(2), mapHeight - start.Y);
             return new Map(polygon, start, end);
-        }   
+        }
+
+        /// <summary>
+        /// Polygon count must be between 1 and 4
+        /// </summary>
+        public static Map GenerateMultipleObstacleMap(Int32 polygonNumber, Int32 maxPointNumber, Int32 maxX, Int32 maxY)
+        {
+            if (polygonNumber == 1)
+                return GenerateSingleObstacleMap(maxPointNumber, maxX, maxY);
+
+            if (polygonNumber > 4)
+                polygonNumber = 4;
+
+            Random random = new Random();
+
+            List<List<Point2D>> polygons = new List<List<Point2D>>();
+            
+            //Spread the polygons out based in the number
+            if (polygonNumber == 2)
+            {
+                //Arrange side by side
+                /* ##### #####
+                 * #   # #   #
+                 * ##### #####
+                */
+                polygons.Add(GenerateRandomPolygon(maxPointNumber, maxX, maxY, 2, 2));
+                polygons.Add(GenerateRandomPolygon(maxPointNumber, maxX, maxY, maxX + 3,2));
+            }
+            else if (polygonNumber == 3)
+            {
+                //Arrange in tri-shape
+                /*   #####
+                 *   #   #
+                 *   #####
+                 *   
+                 * ##### #####
+                 * #   # #   #
+                 * ##### #####
+                */
+                polygons.Add(GenerateRandomPolygon(maxPointNumber, maxX, maxY, maxX/2 + 2, 2));
+                polygons.Add(GenerateRandomPolygon(maxPointNumber, maxX, maxY, 2, maxY + 3));
+                polygons.Add(GenerateRandomPolygon(maxPointNumber, maxX, maxY, maxX + 3, maxY + 3));
+            }
+            else if (polygonNumber == 4)
+            {
+                //Arrange in sqaure
+                /* ##### #####
+                 * #   # #   #
+                 * ##### #####
+                 *   
+                 * ##### #####
+                 * #   # #   #
+                 * ##### #####
+                */
+            }
+
+        }
     }
 }
