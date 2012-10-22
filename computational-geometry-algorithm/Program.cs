@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace computational_geometry_algorithm
 {
@@ -22,6 +23,10 @@ namespace computational_geometry_algorithm
             ConvexHullTesting.TestData(dat);
              * */
 
+            //GraphicalUserInterface gui = new GraphicalUserInterface();
+            Application.EnableVisualStyles();
+            Application.Run(new GraphicalUserInterface());
+
             Map map = new Map("                       a      a                    \n" +
                               "                                                   \n" +
                               "                       a              a            \n" + 
@@ -35,10 +40,11 @@ namespace computational_geometry_algorithm
                               "    b        b                 c              c    \n" +
                               "   b                 b     B                       \n");
 
+           
             map.SolveMap();
 
             //Convex Hull algorithm testing
-            //ConvexHullTesting.RandomisedTests(3, 20, 20, 20);
+            ConvexHullTesting.RandomisedTests(3, 20, 20, 20);
 
             //Single obstacle avoidance test
             //ConvexHullTesting.PathPlannerSingleObstacleRandomisedTest(1, 20, 20, 20);

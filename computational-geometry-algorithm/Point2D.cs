@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 
 namespace computational_geometry_algorithm
 {
@@ -16,6 +17,12 @@ namespace computational_geometry_algorithm
         {
             X = x;
             Y = y;
+        }
+
+        //Converts a Point2D into System.Drawing.Point
+        public Point Convert()
+        {
+            return new Point(X*10, Y*10);
         }
     }
 }

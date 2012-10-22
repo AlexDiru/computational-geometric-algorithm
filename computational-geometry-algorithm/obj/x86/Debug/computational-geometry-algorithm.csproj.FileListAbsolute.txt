@@ -8,3 +8,6 @@ C:\Users\Alex\Documents\Visual Studio 2010\Projects\essential-algorithms\computa
 C:\Users\Alex\Documents\Visual Studio 2010\Projects\essential-algorithms\computational-geometry-algorithm\bin\Debug\computational-geometry-algorithm.exe
 C:\Users\Alex\Documents\Visual Studio 2010\Projects\essential-algorithms\computational-geometry-algorithm\bin\Debug\computational-geometry-algorithm.pdb
 C:\Users\Alex\Documents\Visual Studio 2010\Projects\essential-algorithms\computational-geometry-algorithm\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Alex\Documents\Visual Studio 2010\Projects\essential-algorithms\computational-geometry-algorithm\obj\x86\Debug\computational_geometry_algorithm.GraphicalUserInterface.resources
+C:\Users\Alex\Documents\Visual Studio 2010\Projects\essential-algorithms\computational-geometry-algorithm\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\Alex\Documents\Visual Studio 2010\Projects\essential-algorithms\computational-geometry-algorithm\obj\x86\Debug\GenerateResource.write.1.tlog
