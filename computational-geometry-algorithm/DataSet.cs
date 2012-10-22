@@ -45,8 +45,6 @@ namespace computational_geometry_algorithm
                 points.Add(point.Convert(0,0,sizeMultiplier));
             }
 
-            //points.Add(polygon.First().Convert());
-
             return points;
         }
 

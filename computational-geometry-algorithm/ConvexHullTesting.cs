@@ -78,7 +78,7 @@ namespace computational_geometry_algorithm
 
             UserInterface.DrawMap(start, end, polygon);
             Console.WriteLine("-------------------");
-            map.SolveMap();
+            map.SolveMap(null);
         }
 
         /// <summary>
@@ -106,9 +106,25 @@ namespace computational_geometry_algorithm
         }
 
         /// <summary>
+        /// Gets the maximum Y coordinate of a point of any polygon in the list
+        /// </summary>
+        public static Int32 GetMaximumHeight(List<List<Point2D>> polygons)
+        {
+            Int32 max = 0;
+            foreach (var polygon in polygons)
+            {
+                Int32 newMax = polygon.Max(p => p.Y);
+                if (newMax > max)
+                    max = newMax;
+            }
+
+            return max;
+        }
+
+        /// <summary>
         /// Polygon count must be between 1 and 4
         /// </summary>
-        public static Map GenerateMultipleObstacleMap(Int32 polygonNumber, Int32 maxPointNumber, Int32 maxX, Int32 maxY)
+        public static Map GenerateMultipleObstacleMap(Int32 polygonNumber, Int32 maxPointNumber, Int32 maxX, Int32 maxY, GraphicalUserInterface GUI)
         {
             if (polygonNumber == 1)
                 return GenerateSingleObstacleMap(maxPointNumber, maxX, maxY);
@@ -119,6 +135,9 @@ namespace computational_geometry_algorithm
             Random random = new Random();
 
             List<List<Point2D>> polygons = new List<List<Point2D>>();
+            Point2D start = null;
+            Point2D mid = null;
+            Point2D end = null;
             
             //Spread the polygons out based in the number
             if (polygonNumber == 2)
@@ -130,6 +149,10 @@ namespace computational_geometry_algorithm
                 */
                 polygons.Add(GenerateRandomPolygon(maxPointNumber, maxX, maxY, 2, 2));
                 polygons.Add(GenerateRandomPolygon(maxPointNumber, maxX, maxY, maxX + 3,2));
+                Int32 maxHeight = GetMaximumHeight(polygons);
+                start = new Point2D(0, random.Next(maxHeight));
+                mid = new Point2D(maxX + 2 + random.Next(1), random.Next(maxHeight));
+                end = new Point2D(2*maxX + 3, random.Next(maxHeight));
             }
             else if (polygonNumber == 3)
             {
@@ -145,6 +168,10 @@ namespace computational_geometry_algorithm
                 polygons.Add(GenerateRandomPolygon(maxPointNumber, maxX, maxY, maxX/2 + 2, 2));
                 polygons.Add(GenerateRandomPolygon(maxPointNumber, maxX, maxY, 2, maxY + 3));
                 polygons.Add(GenerateRandomPolygon(maxPointNumber, maxX, maxY, maxX + 3, maxY + 3));
+                Int32 maxHeight = GetMaximumHeight(polygons);
+                start = new Point2D(0, random.Next(maxHeight));
+                mid = new Point2D(maxX + 2 + random.Next(1), random.Next(maxHeight/2) + maxHeight/2 + 2);
+                end = new Point2D(2 * maxX + 3, random.Next(maxHeight));
             }
             else if (polygonNumber == 4)
             {
@@ -157,8 +184,17 @@ namespace computational_geometry_algorithm
                  * #   # #   #
                  * ##### #####
                 */
+                polygons.Add(GenerateRandomPolygon(maxPointNumber, maxX, maxY, 2, 2));
+                polygons.Add(GenerateRandomPolygon(maxPointNumber, maxX, maxY, maxX + 3, 2));
+                polygons.Add(GenerateRandomPolygon(maxPointNumber, maxX, maxY, 2, maxY + 3));
+                polygons.Add(GenerateRandomPolygon(maxPointNumber, maxX, maxY, maxX + 3, maxY + 3));
+                Int32 maxHeight = GetMaximumHeight(polygons);
+                start = new Point2D(0, random.Next(maxHeight));
+                mid = new Point2D(maxX + 2 + random.Next(1), random.Next(maxHeight));
+                end = new Point2D(2 * maxX + 3, random.Next(maxHeight));
             }
 
+            return new Map(polygons, start, end) { Mid = mid, gui = GUI };
         }
     }
 }

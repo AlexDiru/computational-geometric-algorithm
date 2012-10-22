@@ -27,7 +27,7 @@ namespace computational_geometry_algorithm
             Application.EnableVisualStyles();
             Application.Run(new GraphicalUserInterface());
 
-            Map map = new Map("                       a      a                    \n" +
+            /*Map map = new Map("                       a      a                    \n" +
                               "                                                   \n" +
                               "                       a              a            \n" + 
                               "               a                      a            \n" +
@@ -48,7 +48,7 @@ namespace computational_geometry_algorithm
             ConvexHullTesting.RandomisedTests(3, 20, 20, 20);
 
             //Single obstacle avoidance test
-            //ConvexHullTesting.PathPlannerSingleObstacleRandomisedTest(1, 20, 20, 20);
+            //ConvexHullTesting.PathPlannerSingleObstacleRandomisedTest(1, 20, 20, 20);*/
 
             
         }

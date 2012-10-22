@@ -10,8 +10,10 @@ namespace computational_geometry_algorithm
     /// Multiple polygons (lowercase letters)
     /// For now the polygons cannot border or intersect - there must be at least a one tile gap between them
     /// </summary>
-    public class Map
+    public class Map 
     {
+        public GraphicalUserInterface gui;
+
         // Start - represented by A on the map
         // Mid - represented by B on the map
         // End - represented by C on the map
@@ -150,33 +152,40 @@ namespace computational_geometry_algorithm
         /// Excludes start and end from the path
         /// Need to check for collisions with other polygons
         /// </summary>
-        private List<Point2D> FindQuickestPathMultiplePolygons(Point2D start, Point2D end)
+        private List<Point2D> FindQuickestPathMultiplePolygons(Point2D start, Point2D end, GraphicalUserInterface GUI)
         {
             List<Point2D> shortestPath = new List<Point2D>();
 
             //Maps a path to the polygon it avoids
             var paths = new Dictionary<List<Point2D>, List<Point2D>>();
 
-            foreach (var polygon in Polygons.Values)
+            foreach (var polygon in Polygons)
             {
                 //Calcualte convex hull with start and end point and polygon
                 var newPolygon = new List<Point2D>();
                 newPolygon.Add(start);
-                newPolygon.AddRange(polygon);
+                newPolygon.AddRange(polygon.Value);
                 newPolygon.Add(end);
 
-                var path = ConvexHull.GetMinimumPolygonChain(ConvexHull.Solve(newPolygon), start, end);
-                paths.Add(path, polygon);
+                var convexHull = ConvexHull.Solve(newPolygon);
+
+                if (convexHull.Contains(start) && convexHull.Contains(end))
+                {
+                    var path = ConvexHull.GetMinimumPolygonChain(convexHull, start, end);
+                    paths.Add(path, polygon.Value);
+                }
             }
 
             //Get all paths with more than two points
             var correctPaths = new List<List<Point2D>>();
             correctPaths = paths.Keys.Where(p => p.Count > 2).ToList();
 
+            Console.WriteLine("correct paths: " + correctPaths.Count);
+
             if (correctPaths.Count == 0)
                 //All paths go straight from the start to end
                 //Therefore no obstacles are in the way
-                return paths.Values.First();
+                return (new Point2D[] { start, end }).ToList();
 
             if (correctPaths.Count == 1)
                 //Only one path has an obstacle in the way
@@ -185,18 +194,20 @@ namespace computational_geometry_algorithm
 
             //More than one path with an obstacle in the way is the tricky bit
             //We must form a convex hull out of each polygon in the way
-            var largeConvexHull = new List<Point2D>();
-            foreach (var path in correctPaths)
-                largeConvexHull.AddRange(paths[path]);
+            var blockingPaths = paths.Where(p => p.Key.Count > 2).ToList();
+            var majorPolygon = new List<Point2D>();
+            foreach (var polygon in blockingPaths)
+            {
+                majorPolygon = ConvexHull.UnionHulls(majorPolygon, polygon.Value);
+            }
 
-
-            return FindQuickestPathSpecifiedPolygon(largeConvexHull, start, end);
+            return FindQuickestPathSpecifiedPolygon(majorPolygon, start, end);
         }
 
         /// <summary>
         /// Finds the path through the map
         /// </summary>
-        public List<Point2D> SolveMap()
+        public List<Point2D> SolveMap(GraphicalUserInterface GUI)
         {
             List<Point2D> path = new List<Point2D>();
             path.Add(Start);
@@ -209,7 +220,7 @@ namespace computational_geometry_algorithm
                 if (Polygons.Count == 1)
                     path.AddRange(FindQuickestPathSinglePolygon(Start, Mid));
                 else
-                    path.AddRange(FindQuickestPathMultiplePolygons(start, Mid));
+                    path.AddRange(FindQuickestPathMultiplePolygons(start, Mid, GUI));
                 
                 path.Add(Mid);
                 start = Mid;
@@ -219,7 +230,7 @@ namespace computational_geometry_algorithm
             if (Polygons.Count == 1)
                 path.AddRange(FindQuickestPathSinglePolygon(Start, End));
             else
-                path.AddRange(FindQuickestPathMultiplePolygons(start, End));
+                path.AddRange(FindQuickestPathMultiplePolygons(start, End, GUI));
             path.Add(End);
 
             return path;

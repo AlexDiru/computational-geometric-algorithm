@@ -40,7 +40,7 @@ namespace computational_geometry_algorithm
         /// <summary>
         /// Given two lists of points, merges them and removes any duplicate values
         /// </summary>
-        private static List<Point2D> UnionHulls(List<Point2D> lowerHull, List<Point2D> upperHull)
+        public static List<Point2D> UnionHulls(List<Point2D> lowerHull, List<Point2D> upperHull)
         {
             lowerHull.AddRange(upperHull);
             return lowerHull.Distinct().ToList();
@@ -187,7 +187,7 @@ namespace computational_geometry_algorithm
         /// </summary>
         public static List<Point2D> GetMinimumPolygonChain(List<Point2D> convexHull, Point2D start, Point2D end)
         {
-            var circularHull = OrganiseClockwise(convexHull);
+            var circularHull = convexHull;// OrganiseClockwise(convexHull);
 
             List<Point2D> clockwiseChain = new List<Point2D>();
             List<Point2D> counterClockwiseChain = new List<Point2D>();
@@ -195,9 +195,9 @@ namespace computational_geometry_algorithm
             //Clockwise chain
             //Start at the start index
             Int32 currentIndex = circularHull.IndexOf(start);
-            
+
             //While the end isn't reached
-            while (!DataSet.Equals(circularHull[currentIndex], end))
+            while (!DataSet.Equals(circularHull[currentIndex], end) || circularHull.Count == clockwiseChain.Count)
             {
                 //Add the point to the polygon chain
                 clockwiseChain.Add(circularHull[currentIndex]);
@@ -217,7 +217,7 @@ namespace computational_geometry_algorithm
             currentIndex = circularHull.IndexOf(start);
 
             //While the end isn't reached
-            while (!DataSet.Equals(circularHull[currentIndex], end))
+            while (!DataSet.Equals(circularHull[currentIndex], end) || circularHull.Count == counterClockwiseChain.Count)
             {
                 //Add the point to the polygon chain
                 counterClockwiseChain.Add(circularHull[currentIndex]);
