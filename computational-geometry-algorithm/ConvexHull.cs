@@ -14,14 +14,23 @@ namespace computational_geometry_algorithm
         public static List<Point2D> Solve(List<Point2D> points)
         {
             //Sort points by x coordinates
-            var sortedPoints = points.OrderBy(p => p.X).ToList();
+            var xSortedPoints = points.OrderBy(p => p.X).ToList();
+
+            //In case of x coordinates equal, sort by y
+            var groupedPoints = xSortedPoints.GroupBy(sp => sp.X);
+            var sortedPoints = new List<Point2D>();
+            foreach (var group in groupedPoints)
+            {
+                group.OrderBy(g => g.Y);
+                sortedPoints.AddRange(group);
+            }
 
             //Calculate the upper and lower hull of the points
             var upperHull = UpperHull(sortedPoints);
             var lowerHull = LowerHull(sortedPoints);
 
             //Remove the first and last point in the lower hull
-            lowerHull.RemoveAt(0);
+            upperHull.RemoveAt(upperHull.Count - 1);
             lowerHull.RemoveAt(lowerHull.Count - 1);
 
             //Union both the hulls to get the convex hull
@@ -43,19 +52,16 @@ namespace computational_geometry_algorithm
         private static List<Point2D> UpperHull(List<Point2D> points)
         {
             List<Point2D> upperHull = new List<Point2D>();
-            upperHull.Add(points[0]);
-            upperHull.Add(points[1]);
 
-            for (int i = 2; i < points.Count; i++)
+            for (int i = 0; i < points.Count; i++)
             {
-                upperHull.Add(points[i]);
-
                 //While upper hull has more than two points and the last three points do not make a right turn
-                while (upperHull.Count > 2 && NoRightTurn(upperHull[upperHull.Count - 1], upperHull[upperHull.Count - 2], upperHull[upperHull.Count - 3]))
+                while (upperHull.Count >= 2 && NoRightTurn(upperHull[upperHull.Count - 2], upperHull[upperHull.Count - 1], points[i]))
                 {
                     //Delete the middle of the 3 above points
-                    upperHull.RemoveAt(upperHull.Count - 2);
+                    upperHull.RemoveAt(upperHull.Count - 1);
                 }
+                upperHull.Add(points[i]);
             }
 
             return upperHull;
@@ -67,16 +73,14 @@ namespace computational_geometry_algorithm
         private static List<Point2D> LowerHull(List<Point2D> points)
         {
             List<Point2D> lowerHull = new List<Point2D>();
-            lowerHull.Add(points.Last());
-            lowerHull.Add(points[points.Count - 2]);
 
-            for (int i = points.Count - 3; i >= 0; i--)
+            for (int i = points.Count - 1; i >= 0; i--)
             {
-                lowerHull.Add(points[i]);
-                while (lowerHull.Count > 2 && NoRightTurn(lowerHull[lowerHull.Count - 1], lowerHull[lowerHull.Count - 2], lowerHull[lowerHull.Count - 3]))
+                while (lowerHull.Count >= 2 && NoRightTurn(lowerHull[lowerHull.Count - 2], lowerHull[lowerHull.Count - 1], points[i]))
                 {
-                    lowerHull.RemoveAt(lowerHull.Count - 2);
+                    lowerHull.RemoveAt(lowerHull.Count - 1);
                 }
+                lowerHull.Add(points[i]);
             }
 
             return lowerHull;
@@ -87,7 +91,7 @@ namespace computational_geometry_algorithm
         /// </summary>
         private static Boolean NoRightTurn(Point2D a, Point2D b, Point2D c)
         {
-            return CrossProduct(a, b, c) < 0;
+            return CrossProduct(a, b, c) <= 0;
         }
 
         /// <summary>

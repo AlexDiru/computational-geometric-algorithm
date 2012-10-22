@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 
 namespace computational_geometry_algorithm
 {
@@ -30,6 +31,23 @@ namespace computational_geometry_algorithm
                sortedPolygon.AddRange(groupedPoints.ToList()[i].OrderBy(g => g.X));
 
             return sortedPolygon;
+        }
+
+        /// <summary>
+        /// Converts a list of Point2D to a list of Point
+        /// </summary>
+        public static List<Point> ConvertPolygon(List<Point2D> polygon)
+        {
+            List<Point> points = new List<Point>();
+
+            foreach (var point in polygon)
+            {
+                points.Add(point.Convert());
+            }
+
+            //points.Add(polygon.First().Convert());
+
+            return points;
         }
 
         /// <summary>
