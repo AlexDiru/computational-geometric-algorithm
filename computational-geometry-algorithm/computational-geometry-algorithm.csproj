@@ -46,8 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConvexHull.cs" />
-    <Compile Include="ConvexHullTesting.cs" />
-    <Compile Include="DataSet.cs" />
+    <Compile Include="DCHull.cs" />
     <Compile Include="GraphicalUserInterface.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -56,6 +55,8 @@
     </Compile>
     <Compile Include="Map.cs" />
     <Compile Include="Point2D.cs" />
+    <Compile Include="PolygonManipulation.cs" />
+    <Compile Include="ProceduralGeneration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -31,15 +31,6 @@ namespace computational_geometry_algorithm
         }
 
         /// <summary>
-        /// Constructor used when a string is passed
-        /// Parses the string and generates the map
-        /// </summary>
-        public Map(String map) : this()
-        {
-            ImportFromString(map);
-        }
-
-        /// <summary>
         /// Constructor used when a list of polygons and the start and end coordinates are
         /// passed
         /// </summary>
@@ -60,63 +51,6 @@ namespace computational_geometry_algorithm
         }
 
         /// <summary>
-        /// Inputs the map from a string
-        /// ' ' = Empty space
-        /// A = Start
-        /// B = Midpoint (optional)
-        /// C = End
-        /// other = Polygon
-        /// </summary>
-        public void ImportFromString(String data)
-        {
-            //Split data by lines
-            String[] row = data.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-
-            //Iterate through the rows of the string
-            for (int r = 0; r < row.Count(); r++)
-            {
-                //Parse each character in the row
-                for (int c = 0; c < row[r].Length; c++)
-                {
-                    //The x coordinate of the character
-                    int x = c;
-
-                    //Inverting the y value preserves the y axis
-                    int y = row.Count() - 1 - r;
-
-                    switch (row[r][c])
-                    {
-                        //Empty space
-                        case ' ':
-                            break;
-
-                        //Robot Start
-                        case 'A':
-                            Start = new Point2D(x, y);
-                            break;
-
-                        //Robot Mid
-                        case 'B':
-                            Mid = new Point2D(x, y);
-                            break;
-
-                        //Robot End
-                        case 'C':
-                            End = new Point2D(x, y);
-                            break;
-
-                        //Polygon Edge
-                        default:
-                            if (!Polygons.ContainsKey(row[r][c]))
-                                Polygons.Add(row[r][c], new List<Point2D>());
-                            Polygons[row[r][c]].Add(new Point2D(x, y));
-                            break;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Finds the quickest path avoiding the polygon given a start and end point
         /// Excludes start and end from the path
         /// </summary>
@@ -125,7 +59,7 @@ namespace computational_geometry_algorithm
             return FindQuickestPathSpecifiedPolygon(Polygons.Values.First(), start, end);
         }
 
-        private static List<Point2D> FindQuickestPathSpecifiedPolygon(IEnumerable<Point2D> polygon, Point2D start, Point2D end)
+        private static IEnumerable<Point2D> FindQuickestPathSpecifiedPolygon(IEnumerable<Point2D> polygon, Point2D start, Point2D end)
         {
             //Calcualte convex hull with start and end point and polygon
             var newPolygon = new List<Point2D>();

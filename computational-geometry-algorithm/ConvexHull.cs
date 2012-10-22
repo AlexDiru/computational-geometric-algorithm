@@ -195,7 +195,7 @@ namespace computational_geometry_algorithm
             Int32 currentIndex = circularHull.IndexOf(start);
 
             //While the end isn't reached
-            while (!DataSet.Equals(circularHull[currentIndex], end) || circularHull.Count == clockwiseChain.Count)
+            while (!PolygonManipulation.Equals(circularHull[currentIndex], end) || circularHull.Count == clockwiseChain.Count)
             {
                 //Add the point to the polygon chain
                 clockwiseChain.Add(circularHull[currentIndex]);
@@ -215,7 +215,7 @@ namespace computational_geometry_algorithm
             currentIndex = circularHull.IndexOf(start);
 
             //While the end isn't reached
-            while (!DataSet.Equals(circularHull[currentIndex], end) || circularHull.Count == counterClockwiseChain.Count)
+            while (!PolygonManipulation.Equals(circularHull[currentIndex], end) || circularHull.Count == counterClockwiseChain.Count)
             {
                 //Add the point to the polygon chain
                 counterClockwiseChain.Add(circularHull[currentIndex]);
