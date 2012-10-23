@@ -20,6 +20,7 @@ namespace computational_geometry_algorithm
         private readonly SolidBrush MidBrush = new SolidBrush(System.Drawing.Color.BlueViolet);
         private readonly SolidBrush EndBrush = new SolidBrush(System.Drawing.Color.DarkOrange);
         private readonly SolidBrush SolidColourBrush = new SolidBrush(System.Drawing.Color.LightGreen);
+        private readonly SolidBrush VertexBrush = new SolidBrush(System.Drawing.Color.DarkMagenta);
 
         //Pen used to draw the path
         private readonly Pen PathPen = new Pen(System.Drawing.Color.DarkSalmon) { Width = 5 };
@@ -113,7 +114,7 @@ namespace computational_geometry_algorithm
             }
 
             //Fill each rectangle to make them solid
-            GraphicsObject.FillRectangles(SolidColourBrush, points.ToArray());
+            GraphicsObject.FillRectangles(VertexBrush, points.ToArray());
         }
 
         /// <summary>
@@ -182,9 +183,17 @@ namespace computational_geometry_algorithm
             //Draw Polygons
             foreach (var polygon in map.Polygons.Values)
             {
-                DrawPolygon(polygon, true, GraphicalXOffset, GraphicalYOffset);
+                var convexPolygon = ConvexHull.Solve(polygon);
+                DrawPolygon(convexPolygon, true, GraphicalXOffset, GraphicalYOffset);
                 DrawPolygonByPoints(PolygonManipulation.ConvertPolygon(polygon, SizeMultiplier, GraphicalXOffset, GraphicalYOffset).ToArray());
             }
+
+            var path = PolygonManipulation.ConvertPolygon(map.SolveMap(), SizeMultiplier, GraphicalXOffset, GraphicalYOffset);
+
+
+            //Draw a line for the path
+            for (int i = 0; i < path.Count - 1; i++)
+                GraphicsObject.DrawLine(PathPen, path[i], path[i + 1]);
 
             //Draw start middle and end points
             GraphicsObject.FillRectangle(StartBrush, new Rectangle(map.Start.X * SizeMultiplier - PathNodeSize / 2 + GraphicalXOffset,
@@ -199,13 +208,6 @@ namespace computational_geometry_algorithm
                                                                map.End.Y * SizeMultiplier - PathNodeSize / 2 + GraphicalYOffset,
                                                                PathNodeSize,
                                                                PathNodeSize));
-
-            var path = PolygonManipulation.ConvertPolygon(map.SolveMap(), SizeMultiplier, GraphicalXOffset, GraphicalYOffset);
-
-
-            //Draw a line for the path
-            for (int i = 0; i < path.Count - 1; i++)
-                GraphicsObject.DrawLine(PathPen, path[i], path[i + 1]);
 
         }
 

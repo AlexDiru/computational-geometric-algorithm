@@ -126,7 +126,10 @@ namespace computational_geometry_algorithm
             //return recursivePath.Distinct();
         }
 
-
+        /// <summary>
+        /// Given a list of paths, this function will merge them together
+        /// When a path is joined to another path, FindQuickestPathMultiplePolygons is called to path between the paths
+        /// </summary>
         public IEnumerable<Point2D> MergePaths(List<List<Point2D>> correctPaths)
         {
             var start = correctPaths.First().First();
