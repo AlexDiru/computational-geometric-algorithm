@@ -84,7 +84,7 @@ namespace computational_geometry_algorithm
         /// Multiples all the points by a factor of SizeMultiplier to space them out, thus this
         /// must be taken into account for the offset
         /// </summary>
-        public static void DrawPolygon(List<Point2D> polygon, bool fillPolygon, Int32 offsetX = 0, Int32 offsetY = 0)
+        public static void DrawPolygon(List<Point2D> polygon, bool fillPolygon, Int32 offsetX = 0, Int32 offsetY = 0, SolidBrush brush = null)
         {
             //Organise the polygon in clockwise order so the points are next to each other
             var newPolygon = PolygonManipulation.ConvertPolygon(polygon, SizeMultiplier).ToArray();
@@ -98,7 +98,10 @@ namespace computational_geometry_algorithm
 
             //Fill the polygon or draw it by points
             if (fillPolygon)
-                GraphicsObject.FillPolygon(SolidColourBrush, newPolygon, FillMode.Alternate);
+                if (brush != null)
+                    GraphicsObject.FillPolygon(brush, newPolygon, FillMode.Alternate);
+                else
+                    GraphicsObject.FillPolygon(SolidColourBrush, newPolygon, FillMode.Alternate);
             else
                 DrawPolygonByPoints(newPolygon);
         }
@@ -254,8 +257,10 @@ namespace computational_geometry_algorithm
 
             //Draw the convex hull below
             Int32 xOffset = Convert.ToInt32(XSize * SizeMultiplier * 1.5) + GraphicalXOffset;
-            List<Point2D> convexHull = DCHull.Solve(polygon);//ConvexHull.Solve(polygon, true, GraphicalYOffset + (Convert.ToInt32(YSize * SizeMultiplier * 1.5)), GraphicalXOffset, xOffset);
-            DrawPolygon(convexHull, true, xOffset, GraphicalYOffset);
+            DCHull.XOffset = xOffset;
+            DCHull.YOffset =  GraphicalYOffset;
+            List<Point2D> convexHull = DCHull.Solve(polygon);
+            //DrawPolygon(convexHull, true, xOffset, GraphicalYOffset);
             DrawPolygonByPoints(PolygonManipulation.ConvertPolygon(convexHull,SizeMultiplier).ToArray(), xOffset, GraphicalYOffset);
 
             DebugText += "Convex Hull: " + PolygonManipulation.Output(convexHull) + "\r\n";

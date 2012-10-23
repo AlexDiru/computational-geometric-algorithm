@@ -9,6 +9,8 @@ namespace computational_geometry_algorithm
     public static class DCHull
     {
         private static Int32 MinimumSize = 3;
+        public static Int32 XOffset = 0;
+        public static Int32 YOffset = 0;
 
         public static List<Point2D> Solve(List<Point2D> points)
         {
@@ -49,8 +51,8 @@ namespace computational_geometry_algorithm
         {
             var merged = new List<Point2D>();
 
-            polygonA = PolygonManipulation.SortTopogically(polygonA);
-            polygonB = PolygonManipulation.SortTopogically(polygonB);
+            //polygonA = PolygonManipulation.SortTopogically(polygonA);
+            //polygonB = PolygonManipulation.SortTopogically(polygonB);
 
             if (polygonA.Count == 1 && polygonB.Count == 1)
             {
@@ -68,7 +70,7 @@ namespace computational_geometry_algorithm
             var pointsToRemove = new List<Point2D>();
 
             //While T = ab is not lower tangent to both A and B
-            while (!IsLowerTangent(polygonA, rightmostPoint) || !(IsLowerTangent(polygonB, leftmostPoint)))
+            while (!(IsLowerTangent(polygonA, rightmostPoint) && IsLowerTangent(polygonB, leftmostPoint)))
             {
                 //While T is no a lower tangent to A
                 while (!IsLowerTangent(polygonA, rightmostPoint))
@@ -91,12 +93,14 @@ namespace computational_geometry_algorithm
 
             leftmostPoint = GetLeftmostPoint(polygonB);
             rightmostPoint = GetRightmostPoint(polygonA);
+            Int32 yMaxA = polygonA.Max(p => p.Y);
+            Int32 yMaxB = polygonB.Max(p => p.Y);
 
             //While T = ab is not lower tangent to both A and B
-            while (!IsUpperTangent(polygonA, rightmostPoint) || !(IsUpperTangent(polygonB, leftmostPoint)))
+            while (!IsUpperTangent(polygonA, rightmostPoint, leftmostPoint) || !(IsUpperTangent(polygonB, leftmostPoint, rightmostPoint)))
             {
                 //While T is no a lower tangent to A
-                while (!IsUpperTangent(polygonA, rightmostPoint))
+                while (!IsUpperTangent(polygonA, rightmostPoint, leftmostPoint))
                 {
                     pointsToRemove.Add(rightmostPoint);
                     //Move counter clockwise
@@ -104,7 +108,7 @@ namespace computational_geometry_algorithm
                 }
 
                 //While T is not a lower tangent to B
-                while (!IsUpperTangent(polygonB, leftmostPoint))
+                while (!IsUpperTangent(polygonB, leftmostPoint, rightmostPoint))
                 {
                     pointsToRemove.Add(leftmostPoint);
                     //Move clockwise
@@ -114,10 +118,93 @@ namespace computational_geometry_algorithm
 
             Vector2D upperTangent = new Vector2D(rightmostPoint, leftmostPoint);
 
+            //Draw tangents
+            GraphicalUserInterface.DrawPolygon(polygonA, true, XOffset, YOffset, new System.Drawing.SolidBrush(System.Drawing.Color.Coral));
+            GraphicalUserInterface.DrawPolygon(polygonB, true, XOffset, YOffset);
+            GraphicalUserInterface.GraphicsObject.DrawLine(new System.Drawing.Pen(System.Drawing.Color.White) { Width = 5 }, lowerTangent.Start.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier), lowerTangent.Target.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier));
+            GraphicalUserInterface.GraphicsObject.DrawLine(new System.Drawing.Pen(System.Drawing.Color.Black) { Width = 5 }, upperTangent.Start.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier), upperTangent.Target.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier));
+
+
             //Wire together the polygons by tangent
+            return Wire(polygonA, polygonB, lowerTangent, upperTangent);
+
+        }
+
+        private static List<Point2D> Wire(List<Point2D> polygonA, List<Point2D> polygonB, Vector2D lowerTangent, Vector2D upperTangent)
+        {
             var wiredPolygon = new List<Point2D>();
 
-            return mergedPolygons;
+            var currentPoint = polygonA.First();
+            var currentPolygon = polygonA;
+            var otherPolygon = polygonB;
+
+            Boolean lowerTangentUsed = false;
+            Boolean upperTangentUsed = false;
+            Boolean started = false;
+
+            //While we haven't reached the start again
+            do
+            {
+                wiredPolygon.Add(currentPoint);
+
+                //Check for tangent joins
+                if (PolygonManipulation.Equals(currentPoint, lowerTangent.Start) && !lowerTangentUsed && started)
+                {
+                    //Swap polygons
+                    var temp = otherPolygon;
+                    otherPolygon = currentPolygon;
+                    currentPolygon = temp;
+
+                    wiredPolygon.Add(lowerTangent.Start);
+                    currentPoint = currentPolygon[currentPolygon.IndexOf(lowerTangent.Target)];
+
+                    lowerTangentUsed = true;
+                }
+                else if (PolygonManipulation.Equals(currentPoint, lowerTangent.Target) && !lowerTangentUsed && started)
+                {
+                    //Swap polygons
+                    var temp = otherPolygon;
+                    otherPolygon = currentPolygon;
+                    currentPolygon = temp;
+
+                    wiredPolygon.Add(lowerTangent.Target);
+                    currentPoint = currentPolygon[currentPolygon.IndexOf(lowerTangent.Start)];
+
+                    lowerTangentUsed = true;
+                }
+                else if (PolygonManipulation.Equals(currentPoint, upperTangent.Start) && !upperTangentUsed && started)
+                {
+                    //Swap polygons
+                    var temp = otherPolygon;
+                    otherPolygon = currentPolygon;
+                    currentPolygon = temp;
+
+                    wiredPolygon.Add(upperTangent.Start);
+                    currentPoint = currentPolygon[currentPolygon.IndexOf(upperTangent.Target)];
+
+                    upperTangentUsed = true;
+                }
+                else if (PolygonManipulation.Equals(currentPoint, upperTangent.Target) && !upperTangentUsed && started)
+                {
+                    //Swap polygons
+                    var temp = otherPolygon;
+                    otherPolygon = currentPolygon;
+                    currentPolygon = temp;
+                     
+                    wiredPolygon.Add(upperTangent.Target);
+                    currentPoint = currentPolygon[currentPolygon.IndexOf(upperTangent.Start)];
+
+                    upperTangentUsed = true;
+                }
+                else
+                {
+                    currentPoint = PolygonManipulation.GetNextPoint(currentPolygon, currentPoint);
+                }
+
+                started = true;
+            } while (!PolygonManipulation.Equals(currentPoint, wiredPolygon.First()));
+
+            return wiredPolygon;
         }
 
         /*private static List<Point2D> Merge(List<Point2D> polygonA, List<Point2D> polygonB)
@@ -221,25 +308,34 @@ namespace computational_geometry_algorithm
             return mergedPolygons;
         }*/
 
-        public static Boolean IsUpperTangent(List<Point2D> polygon, Point2D ownedByPolygon)
+        public static Boolean IsUpperTangent(List<Point2D> polygon, Point2D p, Point2D q)
         {
+            double m;
+            Int32 sum = p.X - q.X;
+            if (sum == 0)
+                m = 9999999;
+            else
+                m = ((double)p.Y - (double)q.Y) / (double)sum;
+            double b = -1 * m * (double)p.X + (double)p.Y;
 
-            Int32 higherY = ownedByPolygon.Y;
-
-            if (PolygonManipulation.GetPreviousPoint(polygon, ownedByPolygon).Y <= higherY &&
-                PolygonManipulation.GetNextPoint(polygon, ownedByPolygon).Y <= higherY)
-                return true;
-            return false;
+            foreach (var point in polygon)
+            {
+                if (!PolygonManipulation.Equals(point, p) && !PolygonManipulation.Equals(point, q))
+                    if ((m * (double)point.X + b - (double)point.Y) < 0)
+                        return false;
+            }
+            return true;
         }
 
         public static Boolean IsLowerTangent(List<Point2D> polygon, Point2D ownedByPolygon)
         {
             Int32 lowerY = ownedByPolygon.Y;
 
-            if (PolygonManipulation.GetPreviousPoint(polygon, ownedByPolygon).Y >= lowerY &&
+            /*if (PolygonManipulation.GetPreviousPoint(polygon, ownedByPolygon).Y >= lowerY &&
                 PolygonManipulation.GetNextPoint(polygon, ownedByPolygon).Y >= lowerY)
                 return true;
-            return false;
+            return false;*/
+            return ownedByPolygon.Y == polygon.Min(p => p.Y);
         }
 
         public static double test(Point2D p, Point2D q, Point2D r)

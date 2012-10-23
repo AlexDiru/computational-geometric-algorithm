@@ -102,7 +102,7 @@ namespace computational_geometry_algorithm
             if (index == 0)
                 return polygon[polygon.Count - 1];
             else
-                return polygon[--index];
+                return polygon[index-1];
         }
 
         public static Point2D GetNextPoint(List<Point2D> polygon, Point2D currentPoint)
@@ -111,7 +111,7 @@ namespace computational_geometry_algorithm
             if (index == polygon.Count - 1)
                 return polygon[0];
             else
-                return polygon[++index];
+                return polygon[index+1];
         }
 
         public static List<Point2D> SortTopogically(List<Point2D> points)
