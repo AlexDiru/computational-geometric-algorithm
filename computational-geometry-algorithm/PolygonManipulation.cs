@@ -96,5 +96,41 @@ namespace computational_geometry_algorithm
             return output.ToString().Substring(0, output.Length - 1);
         }
 
+        public static Point2D GetPreviousPoint(List<Point2D> polygon, Point2D currentPoint)
+        {
+            var index = polygon.IndexOf(currentPoint);
+            if (index == 0)
+                return polygon[polygon.Count - 1];
+            else
+                return polygon[--index];
+        }
+
+        public static Point2D GetNextPoint(List<Point2D> polygon, Point2D currentPoint)
+        {
+            var index = polygon.IndexOf(currentPoint);
+            if (index == polygon.Count - 1)
+                return polygon[0];
+            else
+                return polygon[++index];
+        }
+
+        public static List<Point2D> SortTopogically(List<Point2D> points)
+        {
+            var sortedPoints = new List<Point2D>();
+
+            //Sort the points by x coords
+            var xSortedPoints = points.OrderBy(p => p.X);
+
+            //Sort the points by y coords
+            var groupedPoints = xSortedPoints.GroupBy(p => p.X);
+
+            foreach (var group in groupedPoints)
+            {
+                sortedPoints.AddRange(group.OrderBy(g => g.Y));
+            }
+
+            return sortedPoints;
+        }
+
     }
 }

@@ -44,7 +44,9 @@ namespace computational_geometry_algorithm
                                                                  upperHullXOffset,
                                                                  subHullYOffset - 20);
                 GraphicalUserInterface.DrawPolygon(lowerHull, true, lowerHullXOffset, subHullYOffset);
+                GraphicalUserInterface.DrawPolygonByPoints(PolygonManipulation.ConvertPolygon(lowerHull, GraphicalUserInterface.SizeMultiplier).ToArray(), lowerHullXOffset, subHullYOffset);
                 GraphicalUserInterface.DrawPolygon(upperHull, true, upperHullXOffset, subHullYOffset);
+                GraphicalUserInterface.DrawPolygonByPoints(PolygonManipulation.ConvertPolygon(upperHull, GraphicalUserInterface.SizeMultiplier).ToArray(), upperHullXOffset, subHullYOffset);
             }
 
             //Remove the first and last point in the lower hull
@@ -115,7 +117,7 @@ namespace computational_geometry_algorithm
         /// <summary>
         /// Calculates the cross product of 3 2d points
         /// </summary>
-        private static Int32 CrossProduct(Point2D a, Point2D b, Point2D c)
+        public static Int32 CrossProduct(Point2D a, Point2D b, Point2D c)
         {
             return (b.X - a.X) * (c.Y - a.Y) - (b.Y - a.Y)*(c.X - a.X);
         }

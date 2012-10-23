@@ -243,8 +243,24 @@ namespace computational_geometry_algorithm
 
         private void testDCHull_Click(object sender, EventArgs e)
         {
-            DCHull.Solve((new Point2D[] { new Point2D(3, 2), new Point2D(4, 5), new Point2D(6, 6), new Point2D(1, 3) }).ToList());
-            DCHull.Solve((new Point2D[] { new Point2D(3, 2), new Point2D(4, 5), new Point2D(6, 6), new Point2D(1,1), new Point2D(0,8)}).ToList());
+            Clear();
+            GetParameters();
+
+            var polygon = ProceduralGeneration.GenerateRandomPolygon(NumPoints, XSize, YSize);
+            DebugText += "Polygon generated: " + PolygonManipulation.Output(polygon) + "\r\n";
+
+            //Draw the polygon at the top
+            DrawPolygon(polygon, false, GraphicalXOffset, GraphicalYOffset);
+
+            //Draw the convex hull below
+            Int32 xOffset = Convert.ToInt32(XSize * SizeMultiplier * 1.5) + GraphicalXOffset;
+            List<Point2D> convexHull = DCHull.Solve(polygon);//ConvexHull.Solve(polygon, true, GraphicalYOffset + (Convert.ToInt32(YSize * SizeMultiplier * 1.5)), GraphicalXOffset, xOffset);
+            DrawPolygon(convexHull, true, xOffset, GraphicalYOffset);
+            DrawPolygonByPoints(PolygonManipulation.ConvertPolygon(convexHull,SizeMultiplier).ToArray(), xOffset, GraphicalYOffset);
+
+            DebugText += "Convex Hull: " + PolygonManipulation.Output(convexHull) + "\r\n";
+
+            DrawDebugText();
         }
     }
 }
