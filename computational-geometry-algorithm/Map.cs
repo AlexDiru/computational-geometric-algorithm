@@ -20,14 +20,14 @@ namespace computational_geometry_algorithm
 
         // Maps a character (sprite) to a polygon, each polygon has a unique sprite to
         // identify it as a separate polygon from the others
-        public Dictionary<char,List<Point2D>> Polygons;
+        public List<List<Point2D>> Polygons;
 
         /// <summary>
         /// Base constructor - initialises the polygon map
         /// </summary>
         public Map()
         {
-            Polygons = new Dictionary<char, List<Point2D>>();
+            Polygons = new List<List<Point2D>>();
         }
 
         /// <summary>
@@ -36,13 +36,10 @@ namespace computational_geometry_algorithm
         /// </summary>
         public Map(IEnumerable<List<Point2D>> polygons, Point2D start, Point2D end) : this()
         {
-            //The sprite of the current polygon
-            char currentKey = 'a';
-
             foreach (var polygon in polygons)
             {
                 //Add the polygon to the map with its unique sprite
-                Polygons.Add(currentKey++, polygon);
+                Polygons.Add(polygon);
             }
 
             //Set the start and end coordinates
@@ -56,7 +53,7 @@ namespace computational_geometry_algorithm
         /// </summary>
         private IEnumerable<Point2D> FindQuickestPathSinglePolygon(Point2D start, Point2D end)
         {
-            return FindQuickestPathSpecifiedPolygon(Polygons.Values.First(), start, end);
+            return FindQuickestPathSpecifiedPolygon(Polygons.First(), start, end);
         }
 
         private static IEnumerable<Point2D> FindQuickestPathSpecifiedPolygon(IEnumerable<Point2D> polygon, Point2D start, Point2D end)
@@ -90,7 +87,7 @@ namespace computational_geometry_algorithm
                 //Calcualte convex hull with start and end point and polygon
                 var newPolygon = new List<Point2D>();
                 newPolygon.Add(start);
-                newPolygon.AddRange(polygon.Value);
+                newPolygon.AddRange(polygon);
                 newPolygon.Add(end);
 
                 var convexHull = ConvexHull.Solve(newPolygon);
@@ -98,7 +95,7 @@ namespace computational_geometry_algorithm
                 if (convexHull.Contains(start) && convexHull.Contains(end))
                 {
                     var path = ConvexHull.GetMinimumPolygonChain(convexHull, start, end);
-                    paths.Add(path, polygon.Value);
+                    paths.Add(path, polygon);
                 }
             }
 
@@ -186,7 +183,7 @@ namespace computational_geometry_algorithm
         public String GetDebugText()
         {
             StringBuilder output = new StringBuilder();
-            foreach (var polygon in Polygons.Values)
+            foreach (var polygon in Polygons)
                 output.AppendLine("Polygon generated: " + PolygonManipulation.Output(polygon));
 
             output.AppendLine("Start: " + Start.Output());

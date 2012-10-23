@@ -171,8 +171,8 @@ namespace computational_geometry_algorithm
 
 
             //Draw Polygon
-            DrawPolygon(ConvexHull.Solve(map.Polygons.Values.First()),true, GraphicalXOffset, GraphicalYOffset);
-            DrawPolygonByPoints(PolygonManipulation.ConvertPolygon(map.Polygons.Values.First(), SizeMultiplier).ToArray(), GraphicalXOffset, GraphicalYOffset);
+            DrawPolygon(ConvexHull.Solve(map.Polygons.First()),true, GraphicalXOffset, GraphicalYOffset);
+            DrawPolygonByPoints(PolygonManipulation.ConvertPolygon(map.Polygons.First(), SizeMultiplier).ToArray(), GraphicalXOffset, GraphicalYOffset);
 
             var path = PolygonManipulation.ConvertPolygon(map.SolveMap(), SizeMultiplier, GraphicalXOffset, GraphicalYOffset);
 
@@ -208,7 +208,7 @@ namespace computational_geometry_algorithm
             var map = ProceduralGeneration.GenerateMultipleObstacleMap(NumPolygons, NumPoints, XSize, YSize);
 
             //Draw Polygons
-            foreach (var polygon in map.Polygons.Values)
+            foreach (var polygon in map.Polygons)
             {
                 var convexPolygon = ConvexHull.Solve(polygon);
                 DrawPolygon(convexPolygon, true, GraphicalXOffset, GraphicalYOffset);
