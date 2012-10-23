@@ -260,7 +260,7 @@ namespace computational_geometry_algorithm
             DCHull.XOffset = xOffset;
             DCHull.YOffset =  GraphicalYOffset;
             List<Point2D> convexHull = DCHull.Solve(polygon);
-            //DrawPolygon(convexHull, true, xOffset, GraphicalYOffset);
+            DrawPolygon(convexHull, true, xOffset, GraphicalYOffset);
             DrawPolygonByPoints(PolygonManipulation.ConvertPolygon(convexHull,SizeMultiplier).ToArray(), xOffset, GraphicalYOffset);
 
             DebugText += "Convex Hull: " + PolygonManipulation.Output(convexHull) + "\r\n";

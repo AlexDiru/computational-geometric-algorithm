@@ -70,10 +70,10 @@ namespace computational_geometry_algorithm
             var pointsToRemove = new List<Point2D>();
 
             //While T = ab is not lower tangent to both A and B
-            while (!(IsLowerTangent(polygonA, rightmostPoint) && IsLowerTangent(polygonB, leftmostPoint)))
+            while (!(IsLowerTangent(polygonA, rightmostPoint, leftmostPoint) && IsLowerTangent(polygonB, leftmostPoint,rightmostPoint)))
             {
                 //While T is no a lower tangent to A
-                while (!IsLowerTangent(polygonA, rightmostPoint))
+                while (!IsLowerTangent(polygonA, rightmostPoint,leftmostPoint))
                 {
                     pointsToRemove.Add(rightmostPoint);
                     //Move counter clockwise
@@ -81,7 +81,7 @@ namespace computational_geometry_algorithm
                 }
 
                 //While T is not a lower tangent to B
-                while (!IsLowerTangent(polygonB, leftmostPoint))
+                while (!IsLowerTangent(polygonB, leftmostPoint,rightmostPoint))
                 {
                     pointsToRemove.Add(leftmostPoint);
                     //Move clockwise
@@ -127,7 +127,6 @@ namespace computational_geometry_algorithm
 
             //Wire together the polygons by tangent
             return Wire(polygonA, polygonB, lowerTangent, upperTangent);
-
         }
 
         private static List<Point2D> Wire(List<Point2D> polygonA, List<Point2D> polygonB, Vector2D lowerTangent, Vector2D upperTangent)
@@ -327,24 +326,23 @@ namespace computational_geometry_algorithm
             return true;
         }
 
-        public static Boolean IsLowerTangent(List<Point2D> polygon, Point2D ownedByPolygon)
+        public static Boolean IsLowerTangent(List<Point2D> polygon, Point2D p, Point2D q)
         {
-            Int32 lowerY = ownedByPolygon.Y;
+            double m;
+            Int32 sum = p.X - q.X;
+            if (sum == 0)
+                m = 9999999;
+            else
+                m = ((double)p.Y - (double)q.Y) / (double)sum;
+            double b = -1 * m * (double)p.X + (double)p.Y;
 
-            /*if (PolygonManipulation.GetPreviousPoint(polygon, ownedByPolygon).Y >= lowerY &&
-                PolygonManipulation.GetNextPoint(polygon, ownedByPolygon).Y >= lowerY)
-                return true;
-            return false;*/
-            return ownedByPolygon.Y == polygon.Min(p => p.Y);
-        }
-
-        public static double test(Point2D p, Point2D q, Point2D r)
-        {
-            if ((p.X - q.X) == 0)
-                return -double.MaxValue;
-            double m = (p.Y - q.Y)/(p.X-q.X);
-            double b = -m * p.X + p.Y; 
-            return m * r.X + b - r.Y;
+            foreach (var point in polygon)
+            {
+                if (!PolygonManipulation.Equals(point, p) && !PolygonManipulation.Equals(point, q))
+                    if ((m * (double)point.X + b - (double)point.Y) > 0)
+                        return false;
+            }
+            return true;
         }
     }
 }
