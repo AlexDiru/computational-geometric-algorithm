@@ -79,5 +79,6 @@ namespace computational_geometry_algorithm
                 var distance = ConvexHull.GetDistance(point, from
             }
         }*/
+
     }
 }

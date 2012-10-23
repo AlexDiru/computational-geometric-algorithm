@@ -103,7 +103,7 @@ namespace computational_geometry_algorithm
             }
 
             //Get all paths with more than two points
-            var correctPaths = paths.Keys.Where(p => p.Count > 2).ToList();
+            var correctPaths = paths.Keys.Where(p => p.Count >= 2).ToList();
 
             if (correctPaths.Count == 0)
                 //All paths go straight from the start to end
@@ -117,10 +117,42 @@ namespace computational_geometry_algorithm
 
             //More than one path with an obstacle in the way is the tricky bit
             //Move to the closest point and retry
-            Point2D closestPoint = PolygonManipulation.GetClosestPoint(paths.Values.First(), start);
-            var recursivePath = new List<Point2D>() { start };
-            recursivePath.AddRange(FindQuickestPathMultiplePolygons(closestPoint, end));
-            return recursivePath;
+            return MergePaths(correctPaths);
+            //Point2D closestPoint = PolygonManipulation.GetClosestPoint(paths.Values.First(), start);
+            //var recursivePath = new List<Point2D>() { start };
+            
+            //
+            //recursivePath.AddRange(FindQuickestPathMultiplePolygons(correctPaths.OrderBy(cp => ConvexHull.GetDistance(cp[1], start)).ToList().First()[1], end));
+            //return recursivePath.Distinct();
+        }
+
+
+        public IEnumerable<Point2D> MergePaths(List<List<Point2D>> correctPaths)
+        {
+            var start = correctPaths.First().First();
+            var end = correctPaths.First().Last();
+
+            var orderedPolygons = correctPaths.OrderBy(cp => ConvexHull.GetDistance(cp[1], start)).ToList();
+
+            //Remove start and end from polygons
+            for (int i = 0; i < orderedPolygons.Count(); i++)
+            {
+                orderedPolygons[i].RemoveAt(0);
+                orderedPolygons[i].RemoveAt(orderedPolygons[i].Count - 1);
+            }
+
+            //Join paths
+            var masterPath = new List<Point2D>();
+            masterPath.Add(start);
+            foreach (var polygon in orderedPolygons.Where(p => p.Count > 0))
+            {
+                masterPath.AddRange(FindQuickestPathMultiplePolygons(masterPath.Last(), polygon.First()));
+                
+                masterPath.AddRange(polygon);
+            }
+
+            masterPath.Add(end);
+            return masterPath;
         }
 
         /// <summary>
