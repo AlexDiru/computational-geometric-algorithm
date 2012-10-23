@@ -46,5 +46,38 @@ namespace computational_geometry_algorithm
         {
             return (a.X == b.X) && (a.Y == b.Y);
         }
+
+        /// <summary>
+        /// Gets the point on a polygon which is closest to a given point
+        /// </summary>
+        public static Point2D GetClosestPoint(List<Point2D> polygon, Point2D from)
+        {
+            float minDistance = float.MaxValue;
+            Point2D closestPoint = null;
+
+            foreach (var point in polygon)
+            {
+                var distance = ConvexHull.GetDistance(point, from);
+                if (distance < minDistance && !PolygonManipulation.Equals(from, point))
+                {
+                    minDistance = distance;
+                    closestPoint = point;
+                }
+            }
+
+            return closestPoint;
+        }
+
+        /*public static Point2D GetClosestPoint(List<List<Point2D>> polygons, Point2D from)
+        {
+            float minDistance = float.MaxValue;
+            Point2D closestPoint = null;
+
+            foreach (var polygon in polygons)
+            {
+                var minPoint = GetClosestPoint(polygon, from);
+                var distance = ConvexHull.GetDistance(point, from
+            }
+        }*/
     }
 }

@@ -161,7 +161,7 @@ namespace computational_geometry_algorithm
         /// <summary>
         /// Gets the Manhattan distance between two points
         /// </summary>
-        private static float GetDistance(Point2D a, Point2D b)
+        public static float GetDistance(Point2D a, Point2D b)
         {
             return (float)Math.Sqrt((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y));
         }

@@ -116,16 +116,11 @@ namespace computational_geometry_algorithm
                 return correctPaths.First();
 
             //More than one path with an obstacle in the way is the tricky bit
-            //We must form a convex hull out of each polygon in the way
-            var blockingPaths = paths.Where(p => p.Key.Count > 2).ToList();
-            var majorPolygon = new List<Point2D>();
-
-            foreach (var polygon in blockingPaths)
-            {
-                majorPolygon = ConvexHull.UnionHulls(majorPolygon, polygon.Value);
-            }
-
-            return FindQuickestPathSpecifiedPolygon(majorPolygon, start, end);
+            //Move to the closest point and retry
+            Point2D closestPoint = PolygonManipulation.GetClosestPoint(paths.Values.First(), start);
+            var recursivePath = new List<Point2D>() { start };
+            recursivePath.AddRange(FindQuickestPathMultiplePolygons(closestPoint, end));
+            return recursivePath;
         }
 
         /// <summary>

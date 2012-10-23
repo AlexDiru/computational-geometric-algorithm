@@ -15,16 +15,17 @@ namespace computational_geometry_algorithm
         //The graphics object
         private Graphics GraphicsObject;
 
-        //The pen used to draw the polygon
-        //private readonly Pen PolygonPen = new Pen(System.Drawing.Color.Red);
+        //Brushes used to fill graphics
         private readonly SolidBrush StartBrush = new SolidBrush(System.Drawing.Color.Black);
         private readonly SolidBrush MidBrush = new SolidBrush(System.Drawing.Color.BlueViolet);
         private readonly SolidBrush EndBrush = new SolidBrush(System.Drawing.Color.DarkOrange);
-        private readonly Pen PathPen = new Pen(System.Drawing.Color.DarkSalmon) { Width = 5 };
-        private static Int32 PathNodeSize = 8;
-
-        //The brush used to fill the polygon
         private readonly SolidBrush SolidColourBrush = new SolidBrush(System.Drawing.Color.LightGreen);
+
+        //Pen used to draw the path
+        private readonly Pen PathPen = new Pen(System.Drawing.Color.DarkSalmon) { Width = 5 };
+
+        //Size of the path nodes (pixels)
+        private static Int32 PathNodeSize = 8;
 
         //The color used to fill the background when the graphics are cleared
         private readonly Color BackgroundColour = DefaultBackColor;
@@ -32,7 +33,7 @@ namespace computational_geometry_algorithm
         //The amount of pixels each Point2D coordinate represents
         private readonly Int32 SizeMultiplier = 20;
 
-        //Parameters for testing
+        //Parameters for testing, set to default and if possible grabbed from form controls using GetParameters()
         private static Int32 XSize;
         private static Int32 YSize;
         private static Int32 NumPoints;
@@ -51,6 +52,9 @@ namespace computational_geometry_algorithm
             GraphicsObject = CreateGraphics();
         }
 
+        /// <summary>
+        /// Attempts the grab parameters from the form controls otherwise the parameters are set to default values
+        /// </summary>
         private void GetParameters()
         {
             //Set default parameters
@@ -112,9 +116,11 @@ namespace computational_geometry_algorithm
             GraphicsObject.FillRectangles(SolidColourBrush, points.ToArray());
         }
 
+        /// <summary>
+        /// Clears any graphics which have already been drawn on the window
+        /// </summary>
         private void Clear()
         {
-            //Clear any previous data
             GraphicsObject.Clear(BackgroundColour);
         }
 
@@ -163,6 +169,9 @@ namespace computational_geometry_algorithm
                                                                PathNodeSize));
         }
 
+        /// <summary>
+        /// Called when the testMultipleObstacleAvoidance button is pressed
+        /// </summary>
         private void TestMultipleObstacleAvoidanceClick(object sender, EventArgs e)
         {
             Clear();
@@ -177,6 +186,20 @@ namespace computational_geometry_algorithm
                 DrawPolygonByPoints(PolygonManipulation.ConvertPolygon(polygon, SizeMultiplier, GraphicalXOffset, GraphicalYOffset).ToArray());
             }
 
+            //Draw start middle and end points
+            GraphicsObject.FillRectangle(StartBrush, new Rectangle(map.Start.X * SizeMultiplier - PathNodeSize / 2 + GraphicalXOffset,
+                                                                 map.Start.Y * SizeMultiplier - PathNodeSize / 2 + GraphicalYOffset,
+                                                                 PathNodeSize,
+                                                                 PathNodeSize));
+            GraphicsObject.FillRectangle(MidBrush, new Rectangle(map.Mid.X * SizeMultiplier - PathNodeSize / 2 + GraphicalXOffset,
+                                                               map.Mid.Y * SizeMultiplier - PathNodeSize / 2 + GraphicalYOffset,
+                                                               PathNodeSize,
+                                                               PathNodeSize));
+            GraphicsObject.FillRectangle(EndBrush, new Rectangle(map.End.X * SizeMultiplier - PathNodeSize / 2 + GraphicalXOffset,
+                                                               map.End.Y * SizeMultiplier - PathNodeSize / 2 + GraphicalYOffset,
+                                                               PathNodeSize,
+                                                               PathNodeSize));
+
             var path = PolygonManipulation.ConvertPolygon(map.SolveMap(), SizeMultiplier, GraphicalXOffset, GraphicalYOffset);
 
 
@@ -184,19 +207,6 @@ namespace computational_geometry_algorithm
             for (int i = 0; i < path.Count - 1; i++)
                 GraphicsObject.DrawLine(PathPen, path[i], path[i + 1]);
 
-            //Draw start middle and end points
-            GraphicsObject.FillRectangle(StartBrush, new Rectangle(map.Start.X*SizeMultiplier - PathNodeSize/2 + GraphicalXOffset,
-                                                                 map.Start.Y*SizeMultiplier - PathNodeSize/2 + GraphicalYOffset,
-                                                                 PathNodeSize,
-                                                                 PathNodeSize));
-            GraphicsObject.FillRectangle(MidBrush, new Rectangle(map.Mid.X*SizeMultiplier - PathNodeSize/2 + GraphicalXOffset,
-                                                               map.Mid.Y*SizeMultiplier - PathNodeSize/2 + GraphicalYOffset,
-                                                               PathNodeSize,
-                                                               PathNodeSize));
-            GraphicsObject.FillRectangle(EndBrush, new Rectangle(map.End.X * SizeMultiplier - PathNodeSize / 2 + GraphicalXOffset, 
-                                                               map.End.Y * SizeMultiplier - PathNodeSize / 2 + GraphicalYOffset, 
-                                                               PathNodeSize, 
-                                                               PathNodeSize));
         }
 
         private void testDCHull_Click(object sender, EventArgs e)
