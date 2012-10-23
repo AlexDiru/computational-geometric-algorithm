@@ -68,17 +68,33 @@ namespace computational_geometry_algorithm
             return closestPoint;
         }
 
-        /*public static Point2D GetClosestPoint(List<List<Point2D>> polygons, Point2D from)
+        /// <summary>
+        /// Outputs the points of the polygon as a string
+        /// </summary>
+        public static String Output(List<Point2D> polygon)
         {
-            float minDistance = float.MaxValue;
-            Point2D closestPoint = null;
-
-            foreach (var polygon in polygons)
+            StringBuilder output = new StringBuilder();
+            foreach (var point in polygon)
             {
-                var minPoint = GetClosestPoint(polygon, from);
-                var distance = ConvexHull.GetDistance(point, from
+                output.Append(point.Output());
+                output.Append(" ");
             }
-        }*/
+
+            //Remove last space
+            return output.ToString().Substring(0, output.Length - 1);
+        }
+
+        public static String Output(List<Point> polygon)
+        {
+            StringBuilder output = new StringBuilder();
+            foreach (var point in polygon)
+            {
+                output.Append(String.Format("({0},{1}) ", point.X/GraphicalUserInterface.SizeMultiplier, point.Y/GraphicalUserInterface.SizeMultiplier));
+            }
+
+            //Remove last space
+            return output.ToString().Substring(0, output.Length - 1);
+        }
 
     }
 }

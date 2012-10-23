@@ -45,6 +45,7 @@ namespace computational_geometry_algorithm
             this.numberOfPolygonsTextBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.testDCHull = new System.Windows.Forms.Button();
+            this.debugTextBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // testConvexHullButton
@@ -151,11 +152,21 @@ namespace computational_geometry_algorithm
             this.testDCHull.UseVisualStyleBackColor = true;
             this.testDCHull.Click += new System.EventHandler(this.testDCHull_Click);
             // 
+            // debugTextBox
+            // 
+            this.debugTextBox.Location = new System.Drawing.Point(726, 27);
+            this.debugTextBox.Multiline = true;
+            this.debugTextBox.Name = "debugTextBox";
+            this.debugTextBox.ReadOnly = true;
+            this.debugTextBox.Size = new System.Drawing.Size(418, 428);
+            this.debugTextBox.TabIndex = 12;
+            // 
             // GraphicalUserInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1180, 672);
+            this.Controls.Add(this.debugTextBox);
             this.Controls.Add(this.testDCHull);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.numberOfPolygonsTextBox);
@@ -189,5 +200,6 @@ namespace computational_geometry_algorithm
         private TextBox numberOfPolygonsTextBox;
         private Label label4;
         private Button testDCHull;
+        private TextBox debugTextBox;
     }
 }

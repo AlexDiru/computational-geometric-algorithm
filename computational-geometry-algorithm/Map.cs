@@ -115,15 +115,8 @@ namespace computational_geometry_algorithm
                 //So only one obstacle is between start and end
                 return correctPaths.First();
 
-            //More than one path with an obstacle in the way is the tricky bit
-            //Move to the closest point and retry
+            //Merge all the paths which are blocked by polygons together
             return MergePaths(correctPaths);
-            //Point2D closestPoint = PolygonManipulation.GetClosestPoint(paths.Values.First(), start);
-            //var recursivePath = new List<Point2D>() { start };
-            
-            //
-            //recursivePath.AddRange(FindQuickestPathMultiplePolygons(correctPaths.OrderBy(cp => ConvexHull.GetDistance(cp[1], start)).ToList().First()[1], end));
-            //return recursivePath.Distinct();
         }
 
         /// <summary>
@@ -188,6 +181,24 @@ namespace computational_geometry_algorithm
             path.Add(End);
 
             return path;
+        }
+
+        public String GetDebugText()
+        {
+            StringBuilder output = new StringBuilder();
+            foreach (var polygon in Polygons.Values)
+                output.AppendLine("Polygon generated: " + PolygonManipulation.Output(polygon));
+
+            output.AppendLine("Start: " + Start.Output());
+
+            if (Mid != null)
+            {
+                output.AppendLine("Mid: " + Mid.Output());
+            }
+
+            output.AppendLine("End: " + End.Output());
+
+            return output.ToString();
         }
     }
 }

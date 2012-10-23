@@ -13,26 +13,27 @@ namespace computational_geometry_algorithm
     public partial class GraphicalUserInterface : Form
     {
         //The graphics object
-        private Graphics GraphicsObject;
+        public static Graphics GraphicsObject;
 
         //Brushes used to fill graphics
-        private readonly SolidBrush StartBrush = new SolidBrush(System.Drawing.Color.Black);
-        private readonly SolidBrush MidBrush = new SolidBrush(System.Drawing.Color.BlueViolet);
-        private readonly SolidBrush EndBrush = new SolidBrush(System.Drawing.Color.DarkOrange);
-        private readonly SolidBrush SolidColourBrush = new SolidBrush(System.Drawing.Color.LightGreen);
-        private readonly SolidBrush VertexBrush = new SolidBrush(System.Drawing.Color.DarkMagenta);
+        private static SolidBrush StartBrush = new SolidBrush(System.Drawing.Color.Black);
+        private static SolidBrush MidBrush = new SolidBrush(System.Drawing.Color.BlueViolet);
+        private static SolidBrush EndBrush = new SolidBrush(System.Drawing.Color.DarkOrange);
+        private static SolidBrush SolidColourBrush = new SolidBrush(System.Drawing.Color.LightGreen);
+        private static SolidBrush VertexBrush = new SolidBrush(System.Drawing.Color.DarkMagenta);
+        public static SolidBrush TextBrush = new SolidBrush(System.Drawing.Color.Black);
 
         //Pen used to draw the path
-        private readonly Pen PathPen = new Pen(System.Drawing.Color.DarkSalmon) { Width = 5 };
+        private static Pen PathPen = new Pen(System.Drawing.Color.DarkSalmon) { Width = 5 };
 
         //Size of the path nodes (pixels)
         private static Int32 PathNodeSize = 8;
 
         //The color used to fill the background when the graphics are cleared
-        private readonly Color BackgroundColour = DefaultBackColor;
+        private static Color BackgroundColour = DefaultBackColor;
 
         //The amount of pixels each Point2D coordinate represents
-        private readonly Int32 SizeMultiplier = 20;
+        public static Int32 SizeMultiplier = 20;
 
         //Parameters for testing, set to default and if possible grabbed from form controls using GetParameters()
         private static Int32 XSize;
@@ -43,6 +44,9 @@ namespace computational_geometry_algorithm
         //Number of pixel offset from the left hand side of the window
         private static Int32 GraphicalXOffset = 30;
         private static Int32 GraphicalYOffset = 30;
+
+        //Text for debug data
+        private static String DebugText = String.Empty;
 
         /// <summary>
         /// Initialises the form and the graphics
@@ -80,7 +84,7 @@ namespace computational_geometry_algorithm
         /// Multiples all the points by a factor of SizeMultiplier to space them out, thus this
         /// must be taken into account for the offset
         /// </summary>
-        public void DrawPolygon(List<Point2D> polygon, bool fillPolygon, Int32 offsetX = 0, Int32 offsetY = 0)
+        public static void DrawPolygon(List<Point2D> polygon, bool fillPolygon, Int32 offsetX = 0, Int32 offsetY = 0)
         {
             //Organise the polygon in clockwise order so the points are next to each other
             var newPolygon = PolygonManipulation.ConvertPolygon(polygon, SizeMultiplier).ToArray();
@@ -102,7 +106,7 @@ namespace computational_geometry_algorithm
         /// <summary>
         /// Given a list of points, draws them as small rectangles
         /// </summary>
-        public void DrawPolygonByPoints(Point[] polygon, Int32 offsetX = 0, Int32 offsetY = 0)
+        public static void DrawPolygonByPoints(Point[] polygon, Int32 offsetX = 0, Int32 offsetY = 0)
         {
             //Each point of the polygon is represented by a rectangle
             List<Rectangle> points = new List<Rectangle>();
@@ -118,11 +122,20 @@ namespace computational_geometry_algorithm
         }
 
         /// <summary>
-        /// Clears any graphics which have already been drawn on the window
+        /// Clears any graphics which have already been drawn on the window and any debug text
         /// </summary>
         private void Clear()
         {
             GraphicsObject.Clear(BackgroundColour);
+            DebugText = String.Empty;
+        }
+
+        /// <summary>
+        /// Writes the debug text to the textbox
+        /// </summary>
+        private void DrawDebugText()
+        {
+            debugTextBox.Text = DebugText;
         }
 
         /// <summary>
@@ -134,12 +147,19 @@ namespace computational_geometry_algorithm
             GetParameters();
 
             var polygon = ProceduralGeneration.GenerateRandomPolygon(NumPoints, XSize, YSize);
+            DebugText += "Polygon generated: " + PolygonManipulation.Output(polygon) + "\r\n";
 
             //Draw the polygon at the top
             DrawPolygon(polygon, false, GraphicalXOffset, GraphicalYOffset);    
 
             //Draw the convex hull below
-            DrawPolygon(ConvexHull.Solve(polygon), true, Convert.ToInt32(XSize * SizeMultiplier * 1.5) + GraphicalXOffset, GraphicalYOffset) ;
+            Int32 xOffset = Convert.ToInt32(XSize * SizeMultiplier * 1.5) + GraphicalXOffset;
+            List<Point2D> convexHull = ConvexHull.Solve(polygon, true, GraphicalYOffset + (Convert.ToInt32(YSize * SizeMultiplier * 1.5)), GraphicalXOffset, xOffset);
+            DrawPolygon(convexHull, true, xOffset, GraphicalYOffset) ;
+
+            DebugText += "Convex Hull: " + PolygonManipulation.Output(convexHull) + "\r\n";
+
+            DrawDebugText();
         }
 
         private void TestSingleObstacleAvoidanceClick(object sender, EventArgs e)
@@ -149,15 +169,18 @@ namespace computational_geometry_algorithm
 
             var map = ProceduralGeneration.GenerateSingleObstacleMap(NumPoints, XSize, YSize);
 
+
             //Draw Polygon
-            DrawPolygon(map.Polygons.Values.First(),true, GraphicalXOffset, GraphicalYOffset);
+            DrawPolygon(ConvexHull.Solve(map.Polygons.Values.First()),true, GraphicalXOffset, GraphicalYOffset);
             DrawPolygonByPoints(PolygonManipulation.ConvertPolygon(map.Polygons.Values.First(), SizeMultiplier).ToArray(), GraphicalXOffset, GraphicalYOffset);
 
             var path = PolygonManipulation.ConvertPolygon(map.SolveMap(), SizeMultiplier, GraphicalXOffset, GraphicalYOffset);
 
             //Draw a line for the path
             for (int i = 0; i < path.Count - 1; i++)
+            {
                 GraphicsObject.DrawLine(PathPen, path[i], path[i + 1]);
+            }
 
             //Draw start and end points
             GraphicsObject.FillRectangle(StartBrush, new Rectangle(map.Start.X * SizeMultiplier - PathNodeSize / 2 + GraphicalXOffset,
@@ -168,6 +191,10 @@ namespace computational_geometry_algorithm
                                                                map.End.Y * SizeMultiplier - PathNodeSize / 2 + GraphicalYOffset,
                                                                PathNodeSize,
                                                                PathNodeSize));
+
+            DebugText += map.GetDebugText();
+            DebugText += "Path: " + PolygonManipulation.Output(path) + "\n";
+            DrawDebugText();
         }
 
         /// <summary>
@@ -209,6 +236,9 @@ namespace computational_geometry_algorithm
                                                                PathNodeSize,
                                                                PathNodeSize));
 
+            DebugText += map.GetDebugText();
+            DebugText += "Path: " + PolygonManipulation.Output(path) + "\n";
+            DrawDebugText();
         }
 
         private void testDCHull_Click(object sender, EventArgs e)

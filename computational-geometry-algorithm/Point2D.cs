@@ -21,5 +21,10 @@ namespace computational_geometry_algorithm
         {
             return new Point(X* sizeMultiplier + offsetX, Y*sizeMultiplier + offsetY);
         }
+
+        public String Output()
+        {
+            return String.Format("({0},{1})", X, Y);
+        }
     }
 }

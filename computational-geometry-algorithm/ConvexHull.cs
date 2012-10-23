@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Graphics = System.Drawing.Graphics;
+using Font = System.Drawing.Font;
 
 namespace computational_geometry_algorithm
 {
@@ -9,8 +11,9 @@ namespace computational_geometry_algorithm
         /// <summary>
         /// Performs the ConvexHull algorithm on a set of points
         /// Algorithm adapted from pseudocode from Dr Muniyappa Manjunathaiah
+        /// Optional graphics object passed to draw upper and lower hull
         /// </summary>
-        public static List<Point2D> Solve(List<Point2D> points)
+        public static List<Point2D> Solve(List<Point2D> points, bool draw = false, Int32 subHullYOffset = 0, Int32 lowerHullXOffset = 0, Int32 upperHullXOffset = 0)
         {
             //Sort points by x coordinates
             var xSortedPoints = points.OrderBy(p => p.X).ToList();
@@ -26,6 +29,23 @@ namespace computational_geometry_algorithm
             //Calculate the upper and lower hull of the points
             var upperHull = UpperHull(sortedPoints);
             var lowerHull = LowerHull(sortedPoints);
+
+            //Draw the hulls if need be
+            if (draw)
+            {
+                GraphicalUserInterface.GraphicsObject.DrawString("Lower Hull", 
+                                                                 new Font(System.Drawing.FontFamily.GenericMonospace, 12), 
+                                                                 GraphicalUserInterface.TextBrush, 
+                                                                 lowerHullXOffset, 
+                                                                 subHullYOffset - 20);
+                GraphicalUserInterface.GraphicsObject.DrawString("Upper Hull",
+                                                                 new Font(System.Drawing.FontFamily.GenericMonospace, 12),
+                                                                 GraphicalUserInterface.TextBrush,
+                                                                 upperHullXOffset,
+                                                                 subHullYOffset - 20);
+                GraphicalUserInterface.DrawPolygon(lowerHull, true, lowerHullXOffset, subHullYOffset);
+                GraphicalUserInterface.DrawPolygon(upperHull, true, upperHullXOffset, subHullYOffset);
+            }
 
             //Remove the first and last point in the lower hull
             upperHull.RemoveAt(upperHull.Count - 1);
