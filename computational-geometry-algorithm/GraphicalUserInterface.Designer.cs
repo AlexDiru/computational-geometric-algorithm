@@ -46,6 +46,7 @@ namespace computational_geometry_algorithm
             this.label4 = new System.Windows.Forms.Label();
             this.testDCHull = new System.Windows.Forms.Button();
             this.debugTextBox = new System.Windows.Forms.TextBox();
+            this.stepThroughCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // testConvexHullButton
@@ -161,11 +162,22 @@ namespace computational_geometry_algorithm
             this.debugTextBox.Size = new System.Drawing.Size(418, 428);
             this.debugTextBox.TabIndex = 12;
             // 
+            // stepThroughCheckBox
+            // 
+            this.stepThroughCheckBox.AutoSize = true;
+            this.stepThroughCheckBox.Location = new System.Drawing.Point(937, 625);
+            this.stepThroughCheckBox.Name = "stepThroughCheckBox";
+            this.stepThroughCheckBox.Size = new System.Drawing.Size(91, 17);
+            this.stepThroughCheckBox.TabIndex = 13;
+            this.stepThroughCheckBox.Text = "Step Through";
+            this.stepThroughCheckBox.UseVisualStyleBackColor = true;
+            // 
             // GraphicalUserInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1180, 672);
+            this.Controls.Add(this.stepThroughCheckBox);
             this.Controls.Add(this.debugTextBox);
             this.Controls.Add(this.testDCHull);
             this.Controls.Add(this.label4);
@@ -201,5 +213,6 @@ namespace computational_geometry_algorithm
         private Label label4;
         private Button testDCHull;
         private TextBox debugTextBox;
+        private CheckBox stepThroughCheckBox;
     }
 }

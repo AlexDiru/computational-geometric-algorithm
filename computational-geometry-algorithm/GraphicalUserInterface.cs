@@ -260,9 +260,9 @@ namespace computational_geometry_algorithm
             Int32 xOffset = Convert.ToInt32(XSize * SizeMultiplier * 1.5) + GraphicalXOffset;
             DCHull.XOffset = xOffset;
             DCHull.YOffset =  GraphicalYOffset;
-            List<Point2D> convexHull = DCHull.Solve(Polygon.Get(polygon)).Convert();
+            List<Point2D> convexHull = DCHull.Solve(Polygon.Get(polygon), stepThroughCheckBox.Checked).Convert();
             DrawPolygon(ConvexHull.Solve(convexHull), true, xOffset, GraphicalYOffset);
-            DrawPolygon(polygon, false, xOffset, GraphicalYOffset);
+            DrawPolygon(convexHull, false, xOffset, GraphicalYOffset);
 
             DebugText += "Convex Hull: " + PolygonManipulation.Output(convexHull) + "\r\n";
 

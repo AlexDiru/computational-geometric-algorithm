@@ -35,6 +35,8 @@ namespace computational_geometry_algorithm
             {
                 if (currentVertex.Point != null)
                     data += "(" + currentVertex.Point.X + "," + currentVertex.Point.Y + ")";
+                else
+                    data += "(null)";
                 currentVertex = currentVertex.Next;
             }
 
@@ -126,7 +128,7 @@ namespace computational_geometry_algorithm
         public static Int32 XOffset = 0;
         public static Int32 YOffset = 0;
 
-        public static Polygon Solve(Polygon points)
+        public static Polygon Solve(Polygon points, bool stepThrough = false)
         {
             if (points.Count() <= MinimumSize)
             {
@@ -143,10 +145,10 @@ namespace computational_geometry_algorithm
             b.AddRange(sortedPoints.Skip(sortedPoints.Count()/2).Take(sortedPoints.Count() - sortedPoints.Count()/2));
 
             //Compute the convex hulls of a and b recursively
-            var polyA = Solve(Polygon.Get(a));
-            var polyB = Solve(Polygon.Get(b));
+            var polyA = Solve(Polygon.Get(a), stepThrough);
+            var polyB = Solve(Polygon.Get(b), stepThrough);
 
-            return Merge(polyA, polyB);
+            return Merge(polyA, polyB, stepThrough);
         }
 
         private static Point2D GetRightmostPoint(IEnumerable<Point2D> polygon)
@@ -163,7 +165,7 @@ namespace computational_geometry_algorithm
             return yMinPoints.Where(p => p.Y == yMinPoints.Min(q => q.Y)).First();
         }
 
-        private static Polygon Merge(Polygon polygonA, Polygon polygonB)
+        private static Polygon Merge(Polygon polygonA, Polygon polygonB, Boolean stepThrough)
         {
 
             var newPolygonA = PolygonManipulation.SortTopogically(polygonA.Convert());
@@ -219,14 +221,17 @@ namespace computational_geometry_algorithm
             Vector2D upperTangent = new Vector2D(rightmostPoint, leftmostPoint);
 
             //Draw tangents
-            /*GraphicalUserInterface.DrawPolygon(polygonA, !(polygonA.Count == 2), XOffset, YOffset, new System.Drawing.SolidBrush(System.Drawing.Color.Coral));
-            GraphicalUserInterface.DrawPolygon(polygonB, polygonB.Count != 2, XOffset, YOffset);
-            GraphicalUserInterface.GraphicsObject.DrawLine(new System.Drawing.Pen(System.Drawing.Color.White) { Width = 5 }, lowerTangent.Start.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier), lowerTangent.Target.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier));
-            GraphicalUserInterface.GraphicsObject.DrawLine(new System.Drawing.Pen(System.Drawing.Color.Black) { Width = 5 }, upperTangent.Start.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier), upperTangent.Target.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier));
+            if (stepThrough)
+            {
+                var listPolygonA = polygonA.Convert();
+                var listPolygonB = polygonB.Convert();
+                GraphicalUserInterface.DrawPolygon(listPolygonA, listPolygonA.Count != 2, XOffset, YOffset, new System.Drawing.SolidBrush(System.Drawing.Color.Coral));
+                GraphicalUserInterface.DrawPolygon(polygonB.Convert(), listPolygonA.Count != 2, XOffset, YOffset);
+                GraphicalUserInterface.GraphicsObject.DrawLine(new System.Drawing.Pen(System.Drawing.Color.White) { Width = 5 }, lowerTangent.Start.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier), lowerTangent.Target.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier));
+                GraphicalUserInterface.GraphicsObject.DrawLine(new System.Drawing.Pen(System.Drawing.Color.Black) { Width = 5 }, upperTangent.Start.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier), upperTangent.Target.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier));
 
-            Console.ReadKey();
-
-            GraphicalUserInterface.Clear();*/
+                Console.ReadKey();
+            }
 
             //Wire together the polygons by tangent
             return Wire(polygonA, polygonB, lowerTangent, upperTangent);
@@ -236,6 +241,9 @@ namespace computational_geometry_algorithm
         public static Polygon Wire(Polygon polygonA, Polygon polygonB, Vector2D lowerTangent, Vector2D upperTangent)
         {
             var wiredPolygon = new List<Point2D>();
+
+            //if ut.s == lt.s
+            Boolean endEarly = PolygonManipulation.Equals(upperTangent.Start, lowerTangent.Start);
 
             wiredPolygon.Add(upperTangent.Start);
             var currentVertex = polygonB.GetVertex(upperTangent.Target);
@@ -252,8 +260,10 @@ namespace computational_geometry_algorithm
                     leftPolygon = true;
                     currentVertex = polygonA.GetVertex(lowerTangent.Start);
                     wiredPolygon.Add(currentVertex.Point);
-                }
 
+                    if (endEarly)
+                        break;
+                }
 
                 do
                 {
