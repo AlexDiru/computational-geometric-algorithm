@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
+using Polygon = computational_geometry_algorithm.dc_hull.Polygon;
 
 namespace computational_geometry_algorithm
 {
@@ -261,7 +262,7 @@ namespace computational_geometry_algorithm
             DCHull.XOffset = xOffset;
             DCHull.YOffset =  GraphicalYOffset;
             List<Point2D> convexHull = DCHull.Solve(Polygon.Get(polygon), stepThroughCheckBox.Checked).Convert();
-            DrawPolygon(ConvexHull.Solve(convexHull), true, xOffset, GraphicalYOffset);
+            DrawPolygon(convexHull, true, xOffset, GraphicalYOffset);
             DrawPolygon(convexHull, false, xOffset, GraphicalYOffset);
 
             DebugText += "Convex Hull: " + PolygonManipulation.Output(convexHull) + "\r\n";

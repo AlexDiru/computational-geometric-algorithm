@@ -3,131 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing.Design;
+using computational_geometry_algorithm.dc_hull;
 
 namespace computational_geometry_algorithm
 {
-    public class Polygon
-    {
-        public Vertex Root;
-        public Vertex Tail;
-
-        public Int32 Count()
-        {
-            var count = 0;
-
-            var currentVertex = Root;
-
-            while (currentVertex != null)
-            {
-                count++;
-                currentVertex = currentVertex.Next;
-            }
-
-            return count;
-        }
-
-        public String Output()
-        {
-            String data = "";
-            var currentVertex = Root;
-
-            while (currentVertex != null)
-            {
-                if (currentVertex.Point != null)
-                    data += "(" + currentVertex.Point.X + "," + currentVertex.Point.Y + ")";
-                else
-                    data += "(null)";
-                currentVertex = currentVertex.Next;
-            }
-
-            return data;
-        }
-
-        public String OutputRv()
-        {
-            String data = "";
-            var currentVertex = Tail;
-
-            while (currentVertex != null)
-            {
-                if (currentVertex.Point != null)
-                    data += "(" + currentVertex.Point.X + "," + currentVertex.Point.Y + ")";
-                currentVertex = currentVertex.Prev;
-            }
-
-            return data;
-        }
-
-        public Vertex GetVertex(Point2D coord)
-        {
-            var currentVertex = Root;
-
-            while (currentVertex != null)
-            {
-                if (currentVertex.Point != null)
-                if (PolygonManipulation.Equals(currentVertex.Point, coord))
-                    return currentVertex;
-                currentVertex = currentVertex.Next;
-            }
-
-            return null;
-        }
-
-        public List<Point2D> Convert()
-        {
-            var list = new List<Point2D>();
-
-            var currentVertex = Root;
-
-            while (currentVertex != null)
-            {
-                if (currentVertex.Point != null)
-                list.Add(currentVertex.Point);
-                currentVertex = currentVertex.Next;
-            }
-
-            return list;
-        }
-
-        public void Import(List<Point2D> data)
-        {
-            Root = new Vertex();
-            var currentVertex = Root;
-
-            foreach (var datum in data)
-            {
-                currentVertex.Point = new Point2D(datum.X, datum.Y);
-                currentVertex.Next = new Vertex();
-                var oldVertex = currentVertex;
-                currentVertex = currentVertex.Next;
-                currentVertex.Prev = oldVertex;
-            }
-
-            Tail = currentVertex;
-        }
-
-        public static Polygon Get(List<Point2D> data)
-        {
-            Polygon p = new Polygon();
-            p.Import(data);
-            return p;
-        }
-
-    }
-
-    public class Vertex
-    {
-        public Point2D Point;
-        public Vertex Next = null;
-        public Vertex Prev = null;
-    }
-
     public static class DCHull
     {
         private static Int32 MinimumSize = 4;
         public static Int32 XOffset = 0;
         public static Int32 YOffset = 0;
 
+        /// <summary>
+        /// This method uses a different method to the Graham-scan convex hull
+        /// Instead of storing the vertices of the polygon in lists
+        /// The vertices are stored as doubly linked lists
+        /// </summary>
         public static Polygon Solve(Polygon points, bool stepThrough = false)
         {
             if (points.Count() <= MinimumSize)
@@ -225,10 +115,15 @@ namespace computational_geometry_algorithm
             {
                 var listPolygonA = polygonA.Convert();
                 var listPolygonB = polygonB.Convert();
-                GraphicalUserInterface.DrawPolygon(listPolygonA, listPolygonA.Count != 2, XOffset, YOffset, new System.Drawing.SolidBrush(System.Drawing.Color.Coral));
-                GraphicalUserInterface.DrawPolygon(polygonB.Convert(), listPolygonA.Count != 2, XOffset, YOffset);
-                GraphicalUserInterface.GraphicsObject.DrawLine(new System.Drawing.Pen(System.Drawing.Color.White) { Width = 5 }, lowerTangent.Start.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier), lowerTangent.Target.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier));
-                GraphicalUserInterface.GraphicsObject.DrawLine(new System.Drawing.Pen(System.Drawing.Color.Black) { Width = 5 }, upperTangent.Start.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier), upperTangent.Target.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier));
+                if (listPolygonA.Count != 2)
+                {
+                    GraphicalUserInterface.DrawPolygon(listPolygonA, true, XOffset, YOffset, new System.Drawing.SolidBrush(System.Drawing.Color.Coral));
+                    GraphicalUserInterface.DrawPolygon(polygonB.Convert(), true, XOffset, YOffset);
+                }
+                GraphicalUserInterface.DrawPolygon(listPolygonA, false, XOffset, YOffset, new System.Drawing.SolidBrush(System.Drawing.Color.Coral));
+                GraphicalUserInterface.DrawPolygon(polygonB.Convert(), false, XOffset, YOffset);
+                GraphicalUserInterface.GraphicsObject.DrawLine(new System.Drawing.Pen(System.Drawing.Color.Blue) { Width = 4 }, lowerTangent.Start.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier), lowerTangent.Target.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier));
+                GraphicalUserInterface.GraphicsObject.DrawLine(new System.Drawing.Pen(System.Drawing.Color.Black) { Width = 4 }, upperTangent.Start.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier), upperTangent.Target.Convert(XOffset, YOffset, GraphicalUserInterface.SizeMultiplier));
 
                 Console.ReadKey();
             }
@@ -310,11 +205,17 @@ namespace computational_geometry_algorithm
             return true;
         }
 
+        /// <summary>
+        /// Determines is pq is the lower tangent of the polygon
+        /// Pseudocode from https://facwiki.cs.byu.edu/cs312ringger/index.php/Project_2
+        /// (Geometry for Common Tangents)
+        /// </summary>
         public static Boolean IsLowerTangent(List<Point2D> polygon, Point2D p, Point2D q)
         {
             double m;
             Int32 sum = p.X - q.X;
             if (sum == 0)
+                //Not double.Max because we don't want to overflow
                 m = 9999999;
             else
                 m = ((double)p.Y - (double)q.Y) / (double)sum;
