@@ -44,7 +44,7 @@ namespace computational_geometry_algorithm
 
         //Number of pixel offset from the left hand side of the window
         private static Int32 GraphicalXOffset = 30;
-        private static Int32 GraphicalYOffset = 30;
+        private static Int32 GraphicalYOffset = 130;
 
         //Text for debug data
         private static String DebugText = String.Empty;
@@ -162,6 +162,9 @@ namespace computational_geometry_algorithm
             DrawPolygon(convexHull, true, xOffset, GraphicalYOffset);
             DrawPolygon(polygon, false, xOffset, GraphicalYOffset);
 
+            GraphicsObject.DrawString("Point Set", new Font(FontFamily.GenericMonospace,12), TextBrush, GraphicalXOffset, GraphicalYOffset - 30);
+            GraphicsObject.DrawString("Convex Hull (Graham Scan)", new Font(FontFamily.GenericMonospace,12), TextBrush, xOffset, GraphicalYOffset - 30);
+
             DebugText += "Convex Hull: " + PolygonManipulation.Output(convexHull) + "\r\n";
 
             DrawDebugText();
@@ -196,6 +199,8 @@ namespace computational_geometry_algorithm
                                                                map.End.Y * SizeMultiplier - PathNodeSize / 2 + GraphicalYOffset,
                                                                PathNodeSize,
                                                                PathNodeSize));
+
+            GraphicsObject.DrawString("Single Obstacle Avoidance", new Font(FontFamily.GenericMonospace, 12), TextBrush, GraphicalXOffset, GraphicalYOffset - 30);
 
             DebugText += map.GetDebugText();
             DebugText += "Path: " + PolygonManipulation.Output(path) + "\n";
@@ -241,6 +246,8 @@ namespace computational_geometry_algorithm
                                                                PathNodeSize,
                                                                PathNodeSize));
 
+            GraphicsObject.DrawString("Multiple Obstacle Avoidance", new Font(FontFamily.GenericMonospace, 12), TextBrush, GraphicalXOffset, GraphicalYOffset - 30);
+
             DebugText += map.GetDebugText();
             DebugText += "Path: " + PolygonManipulation.Output(path) + "\n";
             DrawDebugText();
@@ -260,8 +267,12 @@ namespace computational_geometry_algorithm
             //Draw the polygon at the top
             DrawPolygon(polygon, false, GraphicalXOffset, GraphicalYOffset);
 
-            //Draw the convex hull below
             Int32 xOffset = Convert.ToInt32(XSize * SizeMultiplier * 1.5) + GraphicalXOffset;
+
+            GraphicsObject.DrawString("Point Set", new Font(FontFamily.GenericMonospace, 12), TextBrush, GraphicalXOffset, GraphicalYOffset - 30);
+            GraphicsObject.DrawString("Convex Hull (Divide and Conquer)", new Font(FontFamily.GenericMonospace, 12), TextBrush, xOffset, GraphicalYOffset - 30);
+
+            //Draw the convex hull below
             DCHull.XOffset = xOffset;
             DCHull.YOffset =  GraphicalYOffset;
             List<Point2D> convexHull = DCHull.Solve(Polygon.Get(polygon), stepThroughCheckBox.Checked).Convert();
@@ -271,7 +282,14 @@ namespace computational_geometry_algorithm
             DebugText += "Convex Hull: " + PolygonManipulation.Output(convexHull) + "\r\n";
 
             DrawDebugText();
-           
+        }
+
+        /// <summary>
+        /// Handles link to my GitHub account
+        /// </summary>
+        private void githubHyperlink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(githubHyperlink.Text);
         }
     }
 }
