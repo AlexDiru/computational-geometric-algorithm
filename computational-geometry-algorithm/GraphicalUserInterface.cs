@@ -246,6 +246,9 @@ namespace computational_geometry_algorithm
             DrawDebugText();
         }
 
+        /// <summary>
+        /// Called when testDCHull button is pressed
+        /// </summary>
         private void testDCHull_Click(object sender, EventArgs e)
         {
             Clear();
