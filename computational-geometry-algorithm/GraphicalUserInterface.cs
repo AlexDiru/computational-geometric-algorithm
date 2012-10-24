@@ -127,7 +127,7 @@ namespace computational_geometry_algorithm
         /// <summary>
         /// Clears any graphics which have already been drawn on the window and any debug text
         /// </summary>
-        private void Clear()
+        public static void Clear()
         {
             GraphicsObject.Clear(BackgroundColour);
             DebugText = String.Empty;
@@ -259,13 +259,14 @@ namespace computational_geometry_algorithm
             Int32 xOffset = Convert.ToInt32(XSize * SizeMultiplier * 1.5) + GraphicalXOffset;
             DCHull.XOffset = xOffset;
             DCHull.YOffset =  GraphicalYOffset;
-            List<Point2D> convexHull = DCHull.Solve(polygon);
-            DrawPolygon(convexHull, true, xOffset, GraphicalYOffset);
+            List<Point2D> convexHull = DCHull.Solve(Polygon.Get(polygon)).Convert();
+            DrawPolygon(ConvexHull.Solve(convexHull), true, xOffset, GraphicalYOffset);
             DrawPolygonByPoints(PolygonManipulation.ConvertPolygon(convexHull,SizeMultiplier).ToArray(), xOffset, GraphicalYOffset);
 
             DebugText += "Convex Hull: " + PolygonManipulation.Output(convexHull) + "\r\n";
 
             DrawDebugText();
+           
         }
     }
 }

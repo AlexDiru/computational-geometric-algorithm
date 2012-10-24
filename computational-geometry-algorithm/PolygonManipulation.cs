@@ -98,7 +98,7 @@ namespace computational_geometry_algorithm
 
         public static Point2D GetPreviousPoint(List<Point2D> polygon, Point2D currentPoint)
         {
-            var index = polygon.IndexOf(currentPoint);
+            var index = PolygonManipulation.IndexOf(polygon, currentPoint);
             if (index == 0)
                 return polygon[polygon.Count - 1];
             else
@@ -107,7 +107,7 @@ namespace computational_geometry_algorithm
 
         public static Point2D GetNextPoint(List<Point2D> polygon, Point2D currentPoint)
         {
-            var index = polygon.IndexOf(currentPoint);
+            var index = PolygonManipulation.IndexOf(polygon, currentPoint);
             if (index == polygon.Count - 1)
                 return polygon[0];
             else
@@ -130,6 +130,19 @@ namespace computational_geometry_algorithm
             }
 
             return sortedPoints;
+        }
+
+        /// <summary>
+        /// Value equivalent of .IndexOf
+        /// </summary>
+        public static Int32 IndexOf(List<Point2D> polygon, Point2D p)
+        {
+            for (int i = 0; i < polygon.Count; i++)
+            {
+                if (polygon[i].X == p.X && polygon[i].Y == p.Y)
+                    return i;
+            }
+            return -1;
         }
 
     }

@@ -147,7 +147,7 @@ namespace computational_geometry_algorithm
         /// Algorithm from http://gamedev.stackexchange.com/questions/13229/sorting-array-of-points-in-clockwise-order
         /// Only works on convex hulls!!
         /// </summary>
-        /*public static List<Point2D> OrganiseClockwise(List<Point2D> points)
+        public static List<Point2D> OrganiseClockwise(List<Point2D> points)
         {
             //Calculate centre of points
             Point2D centre = GetPolygonCentre(points);
@@ -178,7 +178,7 @@ namespace computational_geometry_algorithm
             }
 
             return sortedList;
-        }*/
+        }
 
         /// <summary>
         /// Gets the Manhattan distance between two points
