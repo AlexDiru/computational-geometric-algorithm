@@ -84,6 +84,9 @@ namespace computational_geometry_algorithm
             return output.ToString().Substring(0, output.Length - 1);
         }
 
+        /// <summary>
+        /// Outputs all the polygon's coordinates as a string
+        /// </summary>
         public static String Output(List<Point> polygon)
         {
             StringBuilder output = new StringBuilder();
@@ -96,6 +99,9 @@ namespace computational_geometry_algorithm
             return output.ToString().Substring(0, output.Length - 1);
         }
 
+        /// <summary>
+        /// Gets a point previous in the list - usually clockwise direction
+        /// </summary>
         public static Point2D GetPreviousPoint(List<Point2D> polygon, Point2D currentPoint)
         {
             var index = PolygonManipulation.IndexOf(polygon, currentPoint);
@@ -105,6 +111,9 @@ namespace computational_geometry_algorithm
                 return polygon[index-1];
         }
 
+        /// <summary>
+        /// Gets the next point in the list - usually counter clockwise direction
+        /// </summary>
         public static Point2D GetNextPoint(List<Point2D> polygon, Point2D currentPoint)
         {
             var index = PolygonManipulation.IndexOf(polygon, currentPoint);
@@ -114,6 +123,9 @@ namespace computational_geometry_algorithm
                 return polygon[index+1];
         }
 
+        /// <summary>
+        /// Sorts a polygon by x coordinates (and for each x coordinate, by y coordinates)
+        /// </summary>
         public static List<Point2D> SortTopogically(List<Point2D> points)
         {
             var sortedPoints = new List<Point2D>();

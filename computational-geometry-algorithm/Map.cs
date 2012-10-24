@@ -180,6 +180,9 @@ namespace computational_geometry_algorithm
             return path;
         }
 
+        /// <summary>
+        /// Generates the debug text for the map - everything generated
+        /// </summary>
         public String GetDebugText()
         {
             StringBuilder output = new StringBuilder();

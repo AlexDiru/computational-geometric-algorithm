@@ -18,6 +18,9 @@ namespace computational_geometry_algorithm.dc_hull
             Target = b;
         }
 
+        /// <summary>
+        /// If the vector contains a point
+        /// </summary>
         public Boolean Contains(Point2D a)
         {
             return PolygonManipulation.Equals(Target,a) || PolygonManipulation.Equals(Start, a);

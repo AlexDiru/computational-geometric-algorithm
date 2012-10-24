@@ -12,6 +12,9 @@ namespace computational_geometry_algorithm
     {
         private static Random random = new Random();
 
+        /// <summary>
+        /// Generates a random polygon
+        /// </summary>
         public static List<Point2D> GenerateRandomPolygon(Int32 maxPointNumber, Int32 maxX, Int32 maxY, Int32 offsetX = 0, Int32 offsetY = 0)
         {
             //Create points
