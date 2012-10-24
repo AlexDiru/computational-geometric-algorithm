@@ -158,7 +158,8 @@ namespace computational_geometry_algorithm
             //Draw the convex hull below
             Int32 xOffset = Convert.ToInt32(XSize * SizeMultiplier * 1.5) + GraphicalXOffset;
             List<Point2D> convexHull = ConvexHull.Solve(polygon, true, GraphicalYOffset + (Convert.ToInt32(YSize * SizeMultiplier * 1.5)), GraphicalXOffset, xOffset);
-            DrawPolygon(convexHull, true, xOffset, GraphicalYOffset) ;
+            DrawPolygon(convexHull, true, xOffset, GraphicalYOffset);
+            DrawPolygon(polygon, false, xOffset, GraphicalYOffset);
 
             DebugText += "Convex Hull: " + PolygonManipulation.Output(convexHull) + "\r\n";
 
@@ -261,7 +262,7 @@ namespace computational_geometry_algorithm
             DCHull.YOffset =  GraphicalYOffset;
             List<Point2D> convexHull = DCHull.Solve(Polygon.Get(polygon)).Convert();
             DrawPolygon(ConvexHull.Solve(convexHull), true, xOffset, GraphicalYOffset);
-            DrawPolygonByPoints(PolygonManipulation.ConvertPolygon(convexHull,SizeMultiplier).ToArray(), xOffset, GraphicalYOffset);
+            DrawPolygon(polygon, false, xOffset, GraphicalYOffset);
 
             DebugText += "Convex Hull: " + PolygonManipulation.Output(convexHull) + "\r\n";
 

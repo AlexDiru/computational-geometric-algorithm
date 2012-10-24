@@ -254,25 +254,24 @@ namespace computational_geometry_algorithm
                     wiredPolygon.Add(currentVertex.Point);
                 }
 
-            retry:
-                if (leftPolygon)
-                {
-                    if (currentVertex == null || currentVertex.Point == null)
-                        currentVertex = polygonA.Tail.Prev;
-                    else
-                        currentVertex = currentVertex.Prev;
-                }
-                else
-                {
-                    if (currentVertex == null || currentVertex.Point == null)
-                        currentVertex = polygonB.Tail.Prev;
-                    else
-                        currentVertex = currentVertex.Prev;
-                }
 
-
-                if (currentVertex == null || currentVertex.Point == null)
-                    goto retry;
+                do
+                {
+                    if (leftPolygon)
+                    {
+                        if (currentVertex == null || currentVertex.Point == null)
+                            currentVertex = polygonA.Tail.Prev;
+                        else
+                            currentVertex = currentVertex.Prev;
+                    }
+                    else
+                    {
+                        if (currentVertex == null || currentVertex.Point == null)
+                            currentVertex = polygonB.Tail.Prev;
+                        else
+                            currentVertex = currentVertex.Prev;
+                    }
+                } while (currentVertex == null || currentVertex.Point == null);
 
                 //While we aren't back at start
             } while (!PolygonManipulation.Equals(currentVertex.Point, upperTangent.Start));
@@ -280,268 +279,7 @@ namespace computational_geometry_algorithm
             wiredPolygon = wiredPolygon.Distinct().ToList();
             wiredPolygon.Reverse();
             return Polygon.Get(wiredPolygon);
-
-            /*var vertexA = polygonA.GetVertex(upperTangent.Start);
-            var vertexB = polygonB.GetVertex(upperTangent.Target);
-            vertexA.Next = vertexB;
-
-            var aList = vertexB;
-
-            //Save polygon A
-            var remainingPolygonA = new Polygon();
-            remainingPolygonA.Root = vertexA.Next;
-
-            var currentNode = vertexB;
-            while (!PolygonManipulation.Equals(currentNode.Point, lowerTangent.Target))
-            {
-                aList.Next = currentNode;
-                currentNode = currentNode.Prev;
-                if (currentNode == null || currentNode.Point == null)
-                    currentNode = polygonB.Tail.Prev;
-            }
-            //Get lower Tangent target
-            aList.Next = currentNode;
-            aList.Next.Next = new Vertex();
-            aList.Next.Next.Point = lowerTangent.Start;
-
-
-            //polygonA.Tail = new Vertex();
-           // polygonA.Tail.Point = lowerTangent.Target;
-            //vertexA.Prev.Next = null;
-
-            var vertexC = polygonA.GetVertex(lowerTangent.Start);
-            var vertexD = remainingPolygonA.GetVertex(lowerTangent.Start);
-            vertexC.Next = vertexD.Next;
-            int b = 2;
-
-            //vertexB = polygonB.GetVertex(upperTangent.Target);
-            //vertexB.Next = new Vertex();
-  //          vertexB.Next.Point = new Point2D(upperTangent.Start.X, upperTangent.Start.Y);
-
-            //GraphicalUserInterface.DrawPolygon(polygonA.Convert(), true, 100, 300);
-
-
-            return polygonA;
-            /*List<Point2D> wiredPolygon = new List<Point2D>();
-
-            wiredPolygon.Add(lowerTangent.Start);
-
-            //Lower Target -> Upper Start
-            var currentPoint = polygonA[polygonA.IndexOf(lowerTangent.Start)];
-            while (!PolygonManipulation.Equals(currentPoint, upperTangent.Start))
-            {
-                wiredPolygon.Add(currentPoint);
-                //Anti cw
-                currentPoint = PolygonManipulation.GetPreviousPoint(polygonA, currentPoint);
-            }
-
-            wiredPolygon.Add(upperTangent.Start);
-            wiredPolygon.Add(upperTangent.Target);
-
-            Int32 indexStore = wiredPolygon.Count - 1;
-
-            //Upper Target -> Lower Start
-            currentPoint = polygonB[polygonB.IndexOf(upperTangent.Target)];
-            while (!PolygonManipulation.Equals(currentPoint, lowerTangent.Target))
-            {
-                wiredPolygon.Insert(indexStore,currentPoint);
-                //Cw
-                currentPoint = PolygonManipulation.GetNextPoint(polygonB, currentPoint);
-            }
-
-            wiredPolygon.Add(lowerTangent.Target);
-
-            return wiredPolygon;*/
-
-
-
-
-            //GraphicalUserInterface.DrawPolygonByPoints(PolygonManipulation.ConvertPolygon(polygonA, GraphicalUserInterface.SizeMultiplier).ToArray());
-            //GraphicalUserInterface.DrawPolygonByPoints(PolygonManipulation.ConvertPolygon(polygonB, GraphicalUserInterface.SizeMultiplier).ToArray());
-            /*
-            var wiredPolygon = new List<Point2D>();
-
-            //polygonB = PolygonManipulation.SortTopogically(polygonB);
-
-            var currentPoint = polygonA.First();
-            var currentPolygon = polygonA;
-            var otherPolygon = polygonB;
-
-            Boolean lowerTangentUsed = false;
-            Boolean upperTangentUsed = false;
-            Boolean started = false;
-
-            //While we haven't reached the start again
-            do
-            {
-                wiredPolygon.Add(currentPoint);
-                //travelClockwise = !travelClockwise;
-
-                //Check for tangent joins
-                if (PolygonManipulation.Equals(currentPoint, lowerTangent.Start) && !lowerTangentUsed && started)
-                {
-                    //Swap polygons
-                    var temp = otherPolygon;
-                    otherPolygon = currentPolygon;
-                    currentPolygon = temp;
-
-                    //wiredPolygon.Add(lowerTangent.Start);
-                    currentPoint = currentPolygon[PolygonManipulation.IndexOf(currentPolygon, lowerTangent.Target)];
-
-                    lowerTangentUsed = true;
-                }
-                else if (PolygonManipulation.Equals(currentPoint, lowerTangent.Target) && !lowerTangentUsed && started)
-                {
-                    //Swap polygons
-                    var temp = otherPolygon;
-                    otherPolygon = currentPolygon;
-                    currentPolygon = temp;
-
-                    //wiredPolygon.Add(lowerTangent.Target);
-                    currentPoint = currentPolygon[PolygonManipulation.IndexOf(currentPolygon, lowerTangent.Start)];
-
-                    lowerTangentUsed = true;
-                }
-                else if (PolygonManipulation.Equals(currentPoint, upperTangent.Start) && !upperTangentUsed && started)
-                {
-                    //Swap polygons
-                    
-                    var temp = otherPolygon;
-                    otherPolygon = currentPolygon;
-                    currentPolygon = temp;
-
-                    //wiredPolygon.Add(upperTangent.Start);
-                    currentPoint = currentPolygon[PolygonManipulation.IndexOf(currentPolygon, upperTangent.Target)];
-
-                    upperTangentUsed = true;
-                }
-                else if (PolygonManipulation.Equals(currentPoint, upperTangent.Target) && !upperTangentUsed && started)
-                {
-                    //Swap polygons
-                    var temp = otherPolygon;
-                    otherPolygon = currentPolygon;
-                    currentPolygon = temp;
-                     
-                    //wiredPolygon.Add(upperTangent.Target);
-                    currentPoint = currentPolygon[PolygonManipulation.IndexOf(currentPolygon, upperTangent.Start)];
-
-                    upperTangentUsed = true;
-                }
-                else
-                {
-
-                    //travelClockwise = !travelClockwise;
-
-                    currentPoint = PolygonManipulation.GetPreviousPoint(currentPolygon, currentPoint);
-                }
-
-                started = true;
-            } while (!PolygonManipulation.Equals(currentPoint, wiredPolygon.First()));
-
-            return wiredPolygon;*/
-             
         }
-
-        /*private static List<Point2D> Merge(List<Point2D> polygonA, List<Point2D> polygonB)
-        {
-            //Lower tangent
-            Point2D currentPointA = GetRightmostPoint(polygonA);
-            Point2D currentPointB = GetLeftmostPoint(polygonB);
-
-            Int32 indexA = polygonA.ToList().IndexOf(currentPointA);
-            Int32 indexB = polygonB.ToList().IndexOf(currentPointB);
-
-            var pointsToRemoveA = new List<Point2D>();
-            var pointsToRemoveB = new List<Point2D>();
-
-            //Get A's lowest point
-            while (currentPointA.X > polygonA.Min(p => p.X))
-            {
-                //Remove this point
-                pointsToRemoveA.Add(polygonA[indexA]);
-
-                //Adjust the index
-                indexA--;
-                if (indexA == -1)
-                    indexA = polygonA.Count - 1;
-
-                //Get new point
-                currentPointA = polygonA[indexA];
-            }
-
-            //Get B's lowest point
-            while (currentPointB.X > polygonB.Min(p => p.X))
-            {
-                //Remove this point
-                pointsToRemoveB.Add(polygonB[indexB]);
-
-                //Adjust the index
-                indexB--;
-                if (indexB == -1)
-                    indexB = polygonB.Count - 1;
-
-                //Get new point
-                currentPointB = polygonB[indexB];
-            }
-
-            //Upper tangent
-            currentPointA = GetRightmostPoint(polygonA);
-            currentPointB = GetLeftmostPoint(polygonB);
-
-            indexA = polygonA.ToList().IndexOf(currentPointA);
-            indexB = polygonB.ToList().IndexOf(currentPointB);
-
-            //Get A's lowest point
-            while (currentPointA.X < polygonA.Max(p => p.X))
-            {
-                //Remove this point
-                pointsToRemoveA.Add(polygonA[indexA]);
-
-                //Adjust the index
-                indexA++;
-                if (indexA == polygonA.Count)
-                    indexA = 0;
-
-                //Get new point
-                currentPointA = polygonA[indexA];
-            }
-
-            //Get B's lowest point
-            while (currentPointB.X < polygonB.Max(p => p.X))
-            {
-                //Remove this point
-                pointsToRemoveB.Add(polygonB[indexB]);
-
-                //Adjust the index
-                indexB++;
-                if (indexB == polygonB.Count)
-                    indexB = 0;
-
-                //Get new point
-                currentPointB = polygonB[indexB];
-            }
-
-            
-            //Delete any points between the tangents
-            for (int i = 0; i < polygonA.Count; i++)
-            {
-                if (pointsToRemoveA.Contains(polygonA[i]))
-                    polygonA.RemoveAt(i--);
-            } 
-            
-            for (int i = 0; i < polygonB.Count; i++)
-            {
-                if (pointsToRemoveB.Contains(polygonB[i]))
-                    polygonB.RemoveAt(i--);
-            }
-
-            //Merge A and B
-            var mergedPolygons = new List<Point2D>();
-            mergedPolygons.AddRange(polygonA);
-            mergedPolygons.AddRange(polygonB);
-
-            return mergedPolygons;
-        }*/
 
         public static Boolean IsUpperTangent(List<Point2D> polygon, Point2D p, Point2D q)
         {
