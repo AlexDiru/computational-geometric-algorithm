@@ -68,6 +68,7 @@ namespace computational_geometry_algorithm
             YSize = 10;
             NumPoints = 20;
             NumPolygons = 2;
+            SizeMultiplier = 20;
 
             //Check for any manual parameters
             try { XSize = Convert.ToInt32(xSizeTextBox.Text); }
@@ -77,6 +78,8 @@ namespace computational_geometry_algorithm
             try { NumPoints = Convert.ToInt32(numberOfPointsTextBox.Text); }
             catch { }
             try { NumPolygons = Convert.ToInt32(numberOfPolygonsTextBox.Text); }
+            catch { }
+            try { SizeMultiplier = Convert.ToInt32(sizeMultiplierTextBox.Text); }
             catch { }
         }
 
@@ -104,13 +107,13 @@ namespace computational_geometry_algorithm
                 else
                     GraphicsObject.FillPolygon(SolidColourBrush, newPolygon, FillMode.Alternate);
             else
-                DrawPolygonByPoints(newPolygon);
+                DrawPolygonByPoints(newPolygon, 0, 0, brush);
         }
 
         /// <summary>
         /// Given a list of points, draws them as small rectangles
         /// </summary>
-        public static void DrawPolygonByPoints(Point[] polygon, Int32 offsetX = 0, Int32 offsetY = 0)
+        public static void DrawPolygonByPoints(Point[] polygon, Int32 offsetX = 0, Int32 offsetY = 0, SolidBrush brush = null)
         {
             //Each point of the polygon is represented by a rectangle
             List<Rectangle> points = new List<Rectangle>();
@@ -122,7 +125,10 @@ namespace computational_geometry_algorithm
             }
 
             //Fill each rectangle to make them solid
-            GraphicsObject.FillRectangles(VertexBrush, points.ToArray());
+            if (brush == null)
+                brush = VertexBrush;
+
+            GraphicsObject.FillRectangles(brush, points.ToArray());
         }
 
         /// <summary>
@@ -160,10 +166,11 @@ namespace computational_geometry_algorithm
             Int32 xOffset = Convert.ToInt32(XSize * SizeMultiplier * 1.5) + GraphicalXOffset;
             List<Point2D> convexHull = ConvexHull.Solve(polygon, true, GraphicalYOffset + (Convert.ToInt32(YSize * SizeMultiplier * 1.5)), GraphicalXOffset, xOffset);
             DrawPolygon(convexHull, true, xOffset, GraphicalYOffset);
-            DrawPolygon(polygon, false, xOffset, GraphicalYOffset);
+            DrawPolygon(polygon, false, xOffset, GraphicalYOffset, new SolidBrush(System.Drawing.Color.LightPink));
+            DrawPolygon(convexHull, false, xOffset, GraphicalYOffset);
 
             GraphicsObject.DrawString("Point Set", new Font(FontFamily.GenericMonospace,12), TextBrush, GraphicalXOffset, GraphicalYOffset - 30);
-            GraphicsObject.DrawString("Convex Hull (Graham Scan)", new Font(FontFamily.GenericMonospace,12), TextBrush, xOffset, GraphicalYOffset - 30);
+            GraphicsObject.DrawString("Convex Hull (Monotone Chain)", new Font(FontFamily.GenericMonospace,12), TextBrush, xOffset, GraphicalYOffset - 30);
 
             DebugText += "Convex Hull: " + PolygonManipulation.Output(convexHull) + "\r\n";
 
@@ -290,6 +297,22 @@ namespace computational_geometry_algorithm
         private void githubHyperlink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start(githubHyperlink.Text);
+        }
+
+        private void testAllFarthestSegments_Click(object sender, EventArgs e)
+        {
+            Clear();
+            GetParameters();
+
+            var polygon = ProceduralGeneration.GenerateRandomPolygon(NumPoints, XSize, YSize);
+            DebugText += "Polygon generated: " + PolygonManipulation.Output(polygon) + "\r\n";
+
+            //Draw the polygon at the top
+            DrawPolygon(polygon, false, GraphicalXOffset, GraphicalYOffset);
+
+            Int32 xOffset = Convert.ToInt32(XSize * SizeMultiplier * 1.5) + GraphicalXOffset;
+
+            GraphicsObject.DrawString("Point Set", new Font(FontFamily.GenericMonospace, 12), TextBrush, GraphicalXOffset, GraphicalYOffset - 30);
         }
     }
 }

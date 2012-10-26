@@ -52,6 +52,9 @@ namespace computational_geometry_algorithm
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.testAllFarthestSegments = new System.Windows.Forms.Button();
+            this.sizeMultiplierTextBox = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // testConvexHullButton
@@ -225,11 +228,40 @@ namespace computational_geometry_algorithm
             this.label8.TabIndex = 18;
             this.label8.Text = "Convex Hull Algorithms";
             // 
+            // testAllFarthestSegments
+            // 
+            this.testAllFarthestSegments.Location = new System.Drawing.Point(742, 592);
+            this.testAllFarthestSegments.Name = "testAllFarthestSegments";
+            this.testAllFarthestSegments.Size = new System.Drawing.Size(177, 23);
+            this.testAllFarthestSegments.TabIndex = 19;
+            this.testAllFarthestSegments.Text = "All Farthest Segments";
+            this.testAllFarthestSegments.UseVisualStyleBackColor = true;
+            this.testAllFarthestSegments.Click += new System.EventHandler(this.testAllFarthestSegments_Click);
+            // 
+            // sizeMultiplierTextBox
+            // 
+            this.sizeMultiplierTextBox.Location = new System.Drawing.Point(1044, 441);
+            this.sizeMultiplierTextBox.Name = "sizeMultiplierTextBox";
+            this.sizeMultiplierTextBox.Size = new System.Drawing.Size(100, 20);
+            this.sizeMultiplierTextBox.TabIndex = 20;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(934, 444);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(74, 13);
+            this.label9.TabIndex = 21;
+            this.label9.Text = "Size Multiplier:";
+            // 
             // GraphicalUserInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1180, 672);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.sizeMultiplierTextBox);
+            this.Controls.Add(this.testAllFarthestSegments);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
@@ -277,5 +309,8 @@ namespace computational_geometry_algorithm
         private Label label6;
         private Label label7;
         private Label label8;
+        private Button testAllFarthestSegments;
+        private TextBox sizeMultiplierTextBox;
+        private Label label9;
     }
 }

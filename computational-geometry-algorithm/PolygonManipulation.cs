@@ -126,7 +126,7 @@ namespace computational_geometry_algorithm
         /// <summary>
         /// Sorts a polygon by x coordinates (and for each x coordinate, by y coordinates)
         /// </summary>
-        public static List<Point2D> SortTopogically(List<Point2D> points)
+        public static List<Point2D> SortLexographically(List<Point2D> points)
         {
             var sortedPoints = new List<Point2D>();
 

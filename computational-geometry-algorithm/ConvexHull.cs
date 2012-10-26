@@ -16,15 +16,7 @@ namespace computational_geometry_algorithm
         public static List<Point2D> Solve(List<Point2D> points, bool draw = false, Int32 subHullYOffset = 0, Int32 lowerHullXOffset = 0, Int32 upperHullXOffset = 0)
         {
             //Sort points by x coordinates
-            var xSortedPoints = points.OrderBy(p => p.X).ToList();
-
-            //In case of x coordinates equal, sort by y
-            var groupedPoints = xSortedPoints.GroupBy(sp => sp.X);
-            var sortedPoints = new List<Point2D>();
-            foreach (var group in groupedPoints)
-            {
-                sortedPoints.AddRange(group.OrderBy(g => g.Y));
-            }
+            var sortedPoints = PolygonManipulation.SortLexographically(points);
 
             //Calculate the upper and lower hull of the points
             var upperHull = UpperHull(sortedPoints);
@@ -54,16 +46,8 @@ namespace computational_geometry_algorithm
             lowerHull.RemoveAt(lowerHull.Count - 1);
 
             //Union both the hulls to get the convex hull
-            return UnionHulls(lowerHull, upperHull);
-        }
-
-        /// <summary>
-        /// Given two lists of points, merges them and removes any duplicate values
-        /// </summary>
-        public static List<Point2D> UnionHulls(List<Point2D> lowerHull, List<Point2D> upperHull)
-        {
             lowerHull.AddRange(upperHull);
-            return lowerHull.Distinct().ToList();
+            return lowerHull;
         }
 
         /// <summary>

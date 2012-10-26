@@ -14,7 +14,7 @@ namespace computational_geometry_algorithm
         public static Int32 YOffset = 0;
 
         /// <summary>
-        /// This method uses a different method to the Graham-scan convex hull
+        /// This method uses a different method to the Monotone Chain convex hull
         /// Instead of storing the vertices of the polygon in lists
         /// The vertices are stored as doubly linked lists
         /// </summary>
@@ -27,7 +27,7 @@ namespace computational_geometry_algorithm
             }
 
             //Sort the points by x value and then by y value
-            var sortedPoints = PolygonManipulation.SortTopogically(points.Convert());
+            var sortedPoints = PolygonManipulation.SortLexographically(points.Convert());
 
             //Split points into two sets
             var a = new List<Point2D>();
@@ -72,8 +72,8 @@ namespace computational_geometry_algorithm
         {
             //Since a lot of functions require polygons of type List<Point2D>
             //Convert them here to save time converting lots later on
-            var newPolygonA = PolygonManipulation.SortTopogically(polygonA.Convert());
-            var newPolygonB = PolygonManipulation.SortTopogically(polygonB.Convert());
+            var newPolygonA = PolygonManipulation.SortLexographically(polygonA.Convert());
+            var newPolygonB = PolygonManipulation.SortLexographically(polygonB.Convert());
 
             //Get the rightmost point of polygon A and the leftmost point of polygon B
             var tangentPointA = GetRightmostPoint(newPolygonA);
