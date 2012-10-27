@@ -125,23 +125,23 @@ namespace computational_geometry_algorithm
             var start = correctPaths.First().First();
             var end = correctPaths.First().Last();
 
-            var orderedPolygons = correctPaths.OrderBy(cp => ConvexHull.GetDistance(cp[1], start)).ToList();
+            var orderedPaths = correctPaths.OrderBy(cp => ConvexHull.GetDistance(cp[1], start)).ToList();
 
             //Remove start and end from polygons
-            for (int i = 0; i < orderedPolygons.Count(); i++)
+            for (int i = 0; i < orderedPaths.Count(); i++)
             {
-                orderedPolygons[i].RemoveAt(0);
-                orderedPolygons[i].RemoveAt(orderedPolygons[i].Count - 1);
+                orderedPaths[i].RemoveAt(0);
+                orderedPaths[i].RemoveAt(orderedPaths[i].Count - 1);
             }
 
             //Join paths
             var masterPath = new List<Point2D>();
             masterPath.Add(start);
-            foreach (var polygon in orderedPolygons.Where(p => p.Count > 0))
+            foreach (var path in orderedPaths.Where(p => p.Count > 0))
             {
-                masterPath.AddRange(FindQuickestPathMultiplePolygons(masterPath.Last(), polygon.First()));
+                masterPath.AddRange(FindQuickestPathMultiplePolygons(masterPath.Last(), path.First()));
                 
-                masterPath.AddRange(polygon);
+                masterPath.AddRange(path);
             }
 
             masterPath.Add(end);
