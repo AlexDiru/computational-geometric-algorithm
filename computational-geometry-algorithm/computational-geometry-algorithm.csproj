@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AllFarthestSegments.cs" />
+    <Compile Include="Point2DF.cs" />
     <Compile Include="Polygon.cs" />
     <Compile Include="ConvexHull.cs" />
     <Compile Include="DCHull.cs" />

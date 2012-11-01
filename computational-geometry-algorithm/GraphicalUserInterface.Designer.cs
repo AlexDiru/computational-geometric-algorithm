@@ -175,7 +175,7 @@ namespace computational_geometry_algorithm
             this.stepThroughCheckBox.AutoSize = true;
             this.stepThroughCheckBox.Location = new System.Drawing.Point(937, 566);
             this.stepThroughCheckBox.Name = "stepThroughCheckBox";
-            this.stepThroughCheckBox.Size = new System.Drawing.Size(91, 17);
+            this.stepThroughCheckBox.Size = new System.Drawing.Size(89, 17);
             this.stepThroughCheckBox.TabIndex = 13;
             this.stepThroughCheckBox.Text = "Step Through";
             this.stepThroughCheckBox.UseVisualStyleBackColor = true;

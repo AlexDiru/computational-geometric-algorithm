@@ -165,11 +165,35 @@ namespace computational_geometry_algorithm
         }
 
         /// <summary>
+        /// Gets the squared distance between two points
+        /// </summary>
+        public static float GetDistanceSquared(Point2D a, Point2D b)
+        {
+            return (a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y);
+        }
+
+        /// <summary>
+        /// Gets the squared distance between two points
+        /// </summary>
+        public static float GetDistanceSquared(Point2D a, Point2DF b)
+        {
+            return (a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y);
+        }
+
+        /// <summary>
         /// Gets the Manhattan distance between two points
         /// </summary>
         public static float GetDistance(Point2D a, Point2D b)
         {
-            return (float)Math.Sqrt((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y));
+            return (float)Math.Sqrt(GetDistanceSquared(a,b));
+        }
+
+        /// <summary>
+        /// Gets the Manhattan distance between two points
+        /// </summary>
+        public static float GetDistance(Point2D a, Point2DF b)
+        {
+            return (float)Math.Sqrt(GetDistanceSquared(a, b));
         }
 
         /// <summary>

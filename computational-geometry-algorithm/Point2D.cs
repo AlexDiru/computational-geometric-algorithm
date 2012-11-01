@@ -32,5 +32,10 @@ namespace computational_geometry_algorithm
         {
             return String.Format("({0},{1})", X, Y);
         }
+
+        public Point2DF To2DF()
+        {
+            return new Point2DF((float)X, (float)Y);
+        }
     }
 }

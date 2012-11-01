@@ -308,11 +308,13 @@ namespace computational_geometry_algorithm
             DebugText += "Polygon generated: " + PolygonManipulation.Output(polygon) + "\r\n";
 
             //Draw the polygon at the top
-            DrawPolygon(polygon, false, GraphicalXOffset, GraphicalYOffset);
+            DrawPolygon(polygon, false, 0,0);
 
             Int32 xOffset = Convert.ToInt32(XSize * SizeMultiplier * 1.5) + GraphicalXOffset;
 
-            GraphicsObject.DrawString("Point Set", new Font(FontFamily.GenericMonospace, 12), TextBrush, GraphicalXOffset, GraphicalYOffset - 30);
+            //GraphicsObject.DrawString("Point Set", new Font(FontFamily.GenericMonospace, 12), TextBrush, GraphicalXOffset, GraphicalYOffset - 30);
+
+            AllFarthestSegments.Solve(polygon);
         }
     }
 }
