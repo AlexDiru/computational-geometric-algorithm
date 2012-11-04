@@ -13,12 +13,18 @@ namespace computational_geometry_algorithm
         public static Int32 XOffset = 0;
         public static Int32 YOffset = 0;
 
+        public static List<Point2D> Solve(List<Point2D> points, bool stepThrough = false)
+        {
+            points = RecursiveSolve(Polygon.Get(points), stepThrough).Convert();
+            return CleanUp(points);
+        }
+
         /// <summary>
         /// This method uses a different method to the Monotone Chain convex hull
         /// Instead of storing the vertices of the polygon in lists
         /// The vertices are stored as doubly linked lists
         /// </summary>
-        public static Polygon Solve(Polygon points, bool stepThrough = false)
+        private static Polygon RecursiveSolve(Polygon points, bool stepThrough = false)
         {
             //If there are few enough points to warrant the Graham Scan algorithm
             if (points.Count() <= MinimumSize)
@@ -37,11 +43,62 @@ namespace computational_geometry_algorithm
             b.AddRange(sortedPoints.Skip(sortedPoints.Count()/2).Take(sortedPoints.Count() - sortedPoints.Count()/2));
 
             //Compute the convex hulls of a and b recursively
-            var polyA = Solve(Polygon.Get(a), stepThrough);
-            var polyB = Solve(Polygon.Get(b), stepThrough);
+            var polyA = RecursiveSolve(Polygon.Get(a), stepThrough);
+            var polyB = RecursiveSolve(Polygon.Get(b), stepThrough);
 
             //Merge the convex hulls together
             return Merge(polyA, polyB, stepThrough);
+        }
+
+        /// <summary>
+        /// Cleans up the polygon to remove points which are along the same gradient lines
+        /// </summary>
+        private static List<Point2D> CleanUp(List<Point2D> wiredPolygon)
+        {
+            //The last part is to check every point of the wired polygon and make sure that all points that are
+            //next to each other have a change in gradient
+            //If the gradient remains the same from A -> B -> C, the three points lie on the same line and so
+            //B can be deleted
+
+            //Ignore triangles
+            if (wiredPolygon.Count > 3)
+            {
+                int pointsCounter = 0;
+                int i = 2;
+
+                //While not a triangle and not a whole loop of points has been iterated without removal
+                while (wiredPolygon.Count() > 3 && !(pointsCounter == wiredPolygon.Count() - 2))
+                {
+                    //If the two gradients are equal
+                    if (GradientEquals(wiredPolygon[i - 1], wiredPolygon[i - 2], wiredPolygon[i], wiredPolygon[i - 1]))
+                    {
+                        //Delete the middle point
+                        wiredPolygon.RemoveAt(i - 1);
+                        i--;
+                        pointsCounter = 0;
+                    }
+                    else
+                        pointsCounter++;
+
+                    i++;
+
+                    //Reset to start index
+                    if (i >= wiredPolygon.Count() || i < 2)
+                        i = 2;
+                }
+
+                //Check i = 1
+                if (wiredPolygon.Count > 3)
+                    if (GradientEquals(wiredPolygon[0], wiredPolygon[wiredPolygon.Count - 1], wiredPolygon[1], wiredPolygon[0]))
+                        wiredPolygon.RemoveAt(0);
+
+                //Check i = 0
+                if (wiredPolygon.Count > 3)
+                    if (GradientEquals(wiredPolygon[wiredPolygon.Count - 1], wiredPolygon[wiredPolygon.Count - 2], wiredPolygon[0], wiredPolygon[wiredPolygon.Count - 1]))
+                        wiredPolygon.RemoveAt(wiredPolygon.Count - 1);
+            }
+
+            return wiredPolygon;
         }
 
         /// <summary>
@@ -220,61 +277,39 @@ namespace computational_geometry_algorithm
             } while (!PolygonManipulation.Equals(currentVertex.Point, upperTangent.Start));
 
             wiredPolygon = wiredPolygon.Distinct().ToList();
-
-            //The last part is to check every point of the wired polygon and make sure that all points that are
-            //next to each other have a change in gradient
-            //If the gradient remains the same from A -> B -> C, the three points lie on the same line and so
-            //B can be deleted
-
-            //Ignore triangles
-            if (wiredPolygon.Count > 3)
-            {
-                int pointsCounter = 0;
-                int i = 2;
-
-                //While not a triangle and not a whole loop of points has been iterated without removal
-                while (wiredPolygon.Count() > 3 && !(pointsCounter == wiredPolygon.Count()))
-                {
-                    //If the two gradients are equal
-                    if (FloatEqual(CalculateGradient(wiredPolygon[i - 1], wiredPolygon[i - 2]),
-                                   CalculateGradient(wiredPolygon[i], wiredPolygon[i - 1])))
-                    {
-                        //Delete the middle point
-                        wiredPolygon.RemoveAt(i - 1);
-                        i--;
-                        pointsCounter = 0;
-                    }
-                    else
-                        pointsCounter++;
-
-                    i++;
-
-                    //Reset to start index
-                    if (i >= wiredPolygon.Count() || i == 0)
-                        i = 2;
-                }
-
-                //Check i = 1
-                if (wiredPolygon.Count > 2)
-                    if (CalculateGradient(wiredPolygon[0], wiredPolygon[wiredPolygon.Count-1]) == CalculateGradient(wiredPolygon[1], wiredPolygon[0]))
-                        wiredPolygon.RemoveAt(0);
-
-                //Check i = 0
-                if (wiredPolygon.Count > 2)
-                    if (CalculateGradient(wiredPolygon[wiredPolygon.Count - 1], wiredPolygon[wiredPolygon.Count - 2]) == CalculateGradient(wiredPolygon[0], wiredPolygon[wiredPolygon.Count - 1]))
-                        wiredPolygon.RemoveAt(wiredPolygon.Count - 1);
-            }
     
             //Since the wired polygon is in clockwise order, we need to reverse it
             wiredPolygon.Reverse();
             return Polygon.Get(wiredPolygon);
         }
 
-        private static int NegativeModulo(int n, int m)
+        public static Boolean GradientEquals(Point2D a, Point2D b, Point2D c, Point2D d)
         {
-            if (n < 0)
-                n = m + n;
-            return n % m;
+            float run1 = b.X - a.X;
+            float run2 = d.X - c.X;
+            float rise1 = b.Y - a.Y;
+            float rise2 = d.Y - c.Y;
+
+            if (run1 == 0)
+                if (run2 == 0)
+                    return true;
+                else
+                    return false;
+
+            if (run2 == 0)
+                return false;
+
+            if (rise1 == 0)
+                if (rise2 == 0)
+                    return true;
+                else
+                    return false;
+
+            if (rise2 == 0)
+                return false;
+
+            return rise1/run1 == rise2/run2;
+
         }
 
         /// <summary>
@@ -282,19 +317,16 @@ namespace computational_geometry_algorithm
         /// </summary>
         private static float CalculateGradient(Point2D a, Point2D b)
         {
+            float rise = (float)b.Y - (float)a.Y;
             float run = (float)b.X - (float)a.X;
-            if (FloatEqual(run,0))
+            if (run == 0)
                 return 999999;
+            else if (rise == 0)
+                //Have to return an abnormal value here, else if m1.run = 0 and m2.rise = 0
+                //Apparentally the gradients are equal
+                return 888888;
             else
-                return ((float)b.Y - (float)a.Y) / run;
-        }
-
-        /// <summary>
-        /// Checks if two floats are approximately equal
-        /// </summary>
-        private static Boolean FloatEqual(float a, float b)
-        {
-            return a == b;
+                return rise / run;
         }
 
         /// <summary>

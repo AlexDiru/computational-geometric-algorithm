@@ -282,8 +282,10 @@ namespace computational_geometry_algorithm
             //Draw the convex hull below
             DCHull.XOffset = xOffset;
             DCHull.YOffset =  GraphicalYOffset;
-            List<Point2D> convexHull = DCHull.Solve(Polygon.Get(polygon), stepThroughCheckBox.Checked).Convert();
+            List<Point2D> convexHull = DCHull.Solve(polygon, stepThroughCheckBox.Checked);
+
             DrawPolygon(convexHull, true, xOffset, GraphicalYOffset);
+            DrawPolygon(polygon, false, xOffset, GraphicalYOffset, new SolidBrush(System.Drawing.Color.LightPink));
             DrawPolygon(convexHull, false, xOffset, GraphicalYOffset);
 
             DebugText += "Convex Hull: " + PolygonManipulation.Output(convexHull) + "\r\n";
