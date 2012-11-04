@@ -226,52 +226,43 @@ namespace computational_geometry_algorithm
             //If the gradient remains the same from A -> B -> C, the three points lie on the same line and so
             //B can be deleted
 
-            //Need to store the previous two vertices for gradient calculations
-            //So points on the same line aren't added
-            Point2D previousPreviousPreviousVertex = null;
-            Point2D previousPreviousVertex = null;
-            Point2D previousVertex = null;
-
-            //The plus 2 increase the count is to make sure all the points are covered as the previous points of
-            //wiredPolygon[0] and wiredPolygon[1] will not be checked on the first loop around
-            //This is accounted for by modulo array index access
-            for (int i = 0; i < wiredPolygon.Count() + 2 && wiredPolygon.Count() != 0; i++)
+            //Ignore triangles
+            if (wiredPolygon.Count > 3)
             {
-                if (previousVertex != null && previousPreviousVertex != null && wiredPolygon.Count() >= 3)
+                int pointsCounter = 0;
+                int i = 2;
+
+                //While not a triangle and not a whole loop of points has been iterated without removal
+                while (wiredPolygon.Count() > 3 && !(pointsCounter == wiredPolygon.Count()))
                 {
                     //If the two gradients are equal
-                    if (FloatEqual(Math.Abs(CalculateGradient(previousVertex, previousPreviousVertex)), Math.Abs(CalculateGradient(previousPreviousVertex, wiredPolygon[i % wiredPolygon.Count]))))
+                    if (FloatEqual(CalculateGradient(wiredPolygon[i - 1], wiredPolygon[i - 2]),
+                                   CalculateGradient(wiredPolygon[i], wiredPolygon[i - 1])))
                     {
                         //Delete the middle point
-                        wiredPolygon.RemoveAt((i - 1)% wiredPolygon.Count());
+                        wiredPolygon.RemoveAt(i - 1);
                         i--;
-
-                        //Adjust vertices
-                        previousVertex = previousPreviousVertex;
-                        previousPreviousVertex = previousPreviousPreviousVertex;
+                        pointsCounter = 0;
                     }
+                    else
+                        pointsCounter++;
+
+                    i++;
+
+                    //Reset to start index
+                    if (i >= wiredPolygon.Count() || i == 0)
+                        i = 2;
                 }
 
-                //Set previous vertices
-                try
-                {
-                    previousPreviousVertex = wiredPolygon[(i - 1) % wiredPolygon.Count()];
-                }
-                catch
-                {
-                    previousPreviousVertex = null;
-                }
+                //Check i = 1
+                if (wiredPolygon.Count > 2)
+                    if (CalculateGradient(wiredPolygon[0], wiredPolygon[wiredPolygon.Count-1]) == CalculateGradient(wiredPolygon[1], wiredPolygon[0]))
+                        wiredPolygon.RemoveAt(0);
 
-                try
-                {
-                    previousPreviousPreviousVertex = wiredPolygon[(i - 2) % wiredPolygon.Count()];
-                }
-                catch 
-                {
-                    previousPreviousPreviousVertex = null;
-                }
-
-                previousVertex = wiredPolygon[i % wiredPolygon.Count()];
+                //Check i = 0
+                if (wiredPolygon.Count > 2)
+                    if (CalculateGradient(wiredPolygon[wiredPolygon.Count - 1], wiredPolygon[wiredPolygon.Count - 2]) == CalculateGradient(wiredPolygon[0], wiredPolygon[wiredPolygon.Count - 1]))
+                        wiredPolygon.RemoveAt(wiredPolygon.Count - 1);
             }
     
             //Since the wired polygon is in clockwise order, we need to reverse it
@@ -279,16 +270,23 @@ namespace computational_geometry_algorithm
             return Polygon.Get(wiredPolygon);
         }
 
+        private static int NegativeModulo(int n, int m)
+        {
+            if (n < 0)
+                n = m + n;
+            return n % m;
+        }
+
         /// <summary>
         /// Calculates the gradient between two points
         /// </summary>
         private static float CalculateGradient(Point2D a, Point2D b)
         {
-            float run = b.X - a.X;
+            float run = (float)b.X - (float)a.X;
             if (FloatEqual(run,0))
                 return 999999;
             else
-                return (b.Y - a.Y) / run;
+                return ((float)b.Y - (float)a.Y) / run;
         }
 
         /// <summary>
@@ -296,7 +294,7 @@ namespace computational_geometry_algorithm
         /// </summary>
         private static Boolean FloatEqual(float a, float b)
         {
-            return Math.Abs(a - b) < 0.000001;
+            return a == b;
         }
 
         /// <summary>
