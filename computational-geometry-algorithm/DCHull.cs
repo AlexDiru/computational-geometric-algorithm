@@ -220,10 +220,91 @@ namespace computational_geometry_algorithm
             } while (!PolygonManipulation.Equals(currentVertex.Point, upperTangent.Start));
 
             wiredPolygon = wiredPolygon.Distinct().ToList();
+
+            //Need to store the previous two vertices for gradient calculations
+            //So points on the same line aren't added
+            Point2D previousPreviousPreviousVertex = null;
+            Point2D previousPreviousVertex = null;
+            Point2D previousVertex = null;
+
+            Console.WriteLine("NEW");
+
+            for (int i = 0; i < wiredPolygon.Count + 4; i++)
+            {
+                if (previousVertex != null && previousPreviousVertex != null)
+                {
+                    float m1 = CalculateGradient(previousVertex, previousPreviousVertex);
+                    float m2 = CalculateGradient(previousPreviousVertex, wiredPolygon[i % wiredPolygon.Count]);
+                    if (FloatEqual(Math.Abs(m1), Math.Abs(m2)))
+                    {
+                        wiredPolygon.RemoveAt((i - 1)% wiredPolygon.Count);
+                        i--;
+
+                        //Adjust vertices
+                        previousVertex = previousPreviousVertex;
+                        previousPreviousVertex = previousPreviousPreviousVertex;
+                    }
+                    else
+                    {
+                        Console.WriteLine(m1 + "\t" + m2 );
+                    }
+                }
+
+                //Set previous vertices
+                try
+                {
+                    previousPreviousVertex = wiredPolygon[(i - 1) % wiredPolygon.Count];
+                }
+                catch
+                {
+                    previousPreviousVertex = null;
+                }
+
+                try
+                {
+                    previousPreviousPreviousVertex = wiredPolygon[(i - 2) % wiredPolygon.Count];
+                }
+                catch 
+                {
+                    previousPreviousPreviousVertex = null;
+                }
+                previousVertex = wiredPolygon[i % wiredPolygon.Count];
+            }
+
+            /*
+            //If currentVertex and previousVertex are on the same line
+            //Remove previousVertex from the wiredPolygon
+            if (previousVertex != null && previousPreviousVertex != null)
+            {
+                float m1 = CalculateGradient(previousVertex, previousPreviousVertex);
+                float m2 = CalculateGradient(previousPreviousVertex, currentVertex);
+                if (m1 == m2)
+                {
+                    wiredPolygon.RemoveAt(wiredPolygon.Count - 2);
+
+                    //Adjust vertices
+                    previousVertex = previousPreviousVertex;
+                    previousPreviousVertex = previousPreviousPreviousVertex;
+                }
+            }*/
     
             //Since the wired polygon is in clockwise order, we need to reverse it
             wiredPolygon.Reverse();
             return Polygon.Get(wiredPolygon);
+        }
+
+        private static float CalculateGradient(Point2D a, Point2D b)
+        {
+            float run = b.X - a.X;
+            if (FloatEqual(run,0))
+                return 999999;
+            else
+                return (b.Y - a.Y) / run;
+        }
+
+        private static Boolean FloatEqual(float a, float b)
+        {
+            return Math.Abs(a - b) < 0.000001;
         }
 
         /// <summary>
