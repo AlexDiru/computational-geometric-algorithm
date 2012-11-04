@@ -235,15 +235,15 @@ namespace computational_geometry_algorithm
             //The plus 2 increase the count is to make sure all the points are covered as the previous points of
             //wiredPolygon[0] and wiredPolygon[1] will not be checked on the first loop around
             //This is accounted for by modulo array index access
-            for (int i = 0; i < wiredPolygon.Count + 2; i++)
+            for (int i = 0; i < wiredPolygon.Count() + 2 && wiredPolygon.Count() != 0; i++)
             {
-                if (previousVertex != null && previousPreviousVertex != null)
+                if (previousVertex != null && previousPreviousVertex != null && wiredPolygon.Count() >= 3)
                 {
                     //If the two gradients are equal
                     if (FloatEqual(Math.Abs(CalculateGradient(previousVertex, previousPreviousVertex)), Math.Abs(CalculateGradient(previousPreviousVertex, wiredPolygon[i % wiredPolygon.Count]))))
                     {
                         //Delete the middle point
-                        wiredPolygon.RemoveAt((i - 1)% wiredPolygon.Count);
+                        wiredPolygon.RemoveAt((i - 1)% wiredPolygon.Count());
                         i--;
 
                         //Adjust vertices
@@ -255,7 +255,7 @@ namespace computational_geometry_algorithm
                 //Set previous vertices
                 try
                 {
-                    previousPreviousVertex = wiredPolygon[(i - 1) % wiredPolygon.Count];
+                    previousPreviousVertex = wiredPolygon[(i - 1) % wiredPolygon.Count()];
                 }
                 catch
                 {
@@ -264,14 +264,14 @@ namespace computational_geometry_algorithm
 
                 try
                 {
-                    previousPreviousPreviousVertex = wiredPolygon[(i - 2) % wiredPolygon.Count];
+                    previousPreviousPreviousVertex = wiredPolygon[(i - 2) % wiredPolygon.Count()];
                 }
                 catch 
                 {
                     previousPreviousPreviousVertex = null;
                 }
 
-                previousVertex = wiredPolygon[i % wiredPolygon.Count];
+                previousVertex = wiredPolygon[i % wiredPolygon.Count()];
             }
     
             //Since the wired polygon is in clockwise order, we need to reverse it
