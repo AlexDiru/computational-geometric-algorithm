@@ -221,32 +221,34 @@ namespace computational_geometry_algorithm
 
             wiredPolygon = wiredPolygon.Distinct().ToList();
 
+            //The last part is to check every point of the wired polygon and make sure that all points that are
+            //next to each other have a change in gradient
+            //If the gradient remains the same from A -> B -> C, the three points lie on the same line and so
+            //B can be deleted
+
             //Need to store the previous two vertices for gradient calculations
             //So points on the same line aren't added
             Point2D previousPreviousPreviousVertex = null;
             Point2D previousPreviousVertex = null;
             Point2D previousVertex = null;
 
-            Console.WriteLine("NEW");
-
-            for (int i = 0; i < wiredPolygon.Count + 4; i++)
+            //The plus 2 increase the count is to make sure all the points are covered as the previous points of
+            //wiredPolygon[0] and wiredPolygon[1] will not be checked on the first loop around
+            //This is accounted for by modulo array index access
+            for (int i = 0; i < wiredPolygon.Count + 2; i++)
             {
                 if (previousVertex != null && previousPreviousVertex != null)
                 {
-                    float m1 = CalculateGradient(previousVertex, previousPreviousVertex);
-                    float m2 = CalculateGradient(previousPreviousVertex, wiredPolygon[i % wiredPolygon.Count]);
-                    if (FloatEqual(Math.Abs(m1), Math.Abs(m2)))
+                    //If the two gradients are equal
+                    if (FloatEqual(Math.Abs(CalculateGradient(previousVertex, previousPreviousVertex)), Math.Abs(CalculateGradient(previousPreviousVertex, wiredPolygon[i % wiredPolygon.Count]))))
                     {
+                        //Delete the middle point
                         wiredPolygon.RemoveAt((i - 1)% wiredPolygon.Count);
                         i--;
 
                         //Adjust vertices
                         previousVertex = previousPreviousVertex;
                         previousPreviousVertex = previousPreviousPreviousVertex;
-                    }
-                    else
-                    {
-                        Console.WriteLine(m1 + "\t" + m2 );
                     }
                 }
 
@@ -268,31 +270,18 @@ namespace computational_geometry_algorithm
                 {
                     previousPreviousPreviousVertex = null;
                 }
+
                 previousVertex = wiredPolygon[i % wiredPolygon.Count];
             }
-
-            /*
-            //If currentVertex and previousVertex are on the same line
-            //Remove previousVertex from the wiredPolygon
-            if (previousVertex != null && previousPreviousVertex != null)
-            {
-                float m1 = CalculateGradient(previousVertex, previousPreviousVertex);
-                float m2 = CalculateGradient(previousPreviousVertex, currentVertex);
-                if (m1 == m2)
-                {
-                    wiredPolygon.RemoveAt(wiredPolygon.Count - 2);
-
-                    //Adjust vertices
-                    previousVertex = previousPreviousVertex;
-                    previousPreviousVertex = previousPreviousPreviousVertex;
-                }
-            }*/
     
             //Since the wired polygon is in clockwise order, we need to reverse it
             wiredPolygon.Reverse();
             return Polygon.Get(wiredPolygon);
         }
 
+        /// <summary>
+        /// Calculates the gradient between two points
+        /// </summary>
         private static float CalculateGradient(Point2D a, Point2D b)
         {
             float run = b.X - a.X;
@@ -302,6 +291,9 @@ namespace computational_geometry_algorithm
                 return (b.Y - a.Y) / run;
         }
 
+        /// <summary>
+        /// Checks if two floats are approximately equal
+        /// </summary>
         private static Boolean FloatEqual(float a, float b)
         {
             return Math.Abs(a - b) < 0.000001;
