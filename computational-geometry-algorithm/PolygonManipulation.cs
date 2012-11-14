@@ -128,6 +128,8 @@ namespace computational_geometry_algorithm
         /// </summary>
         public static List<Point2D> SortLexographically(List<Point2D> points)
         {
+            return points.OrderBy(p => p.X).ThenBy(p => p.Y).ToList();
+
             var sortedPoints = new List<Point2D>();
 
             //Sort the points by x coords

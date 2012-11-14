@@ -156,7 +156,12 @@ namespace computational_geometry_algorithm
             Clear();
             GetParameters();
 
-            var polygon = ProceduralGeneration.GenerateRandomPolygon(NumPoints, XSize, YSize);
+            var polygon = GetPointSetFromTextbox();
+
+            if (polygon == null) 
+                polygon = ProceduralGeneration.GenerateRandomPolygon(NumPoints, XSize, YSize);
+
+            DebugText += "Point Set Size: " + polygon.Count + "\r\n";
             DebugText += "Polygon generated: " + PolygonManipulation.Output(polygon) + "\r\n";
 
             //Draw the polygon at the top
@@ -261,6 +266,27 @@ namespace computational_geometry_algorithm
         }
 
         /// <summary>
+        /// Checks the point set textbox for input, if there is any input returns the polygon created from the input
+        /// Input format: (x,y) (x,y) ... (x,y)
+        /// </summary>
+        private List<Point2D> GetPointSetFromTextbox()
+        {
+            if (PointSetTextbox.Text == "")
+                return null;
+
+            String[] coordinates = PointSetTextbox.Text.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            var pointSet = new List<Point2D>();
+
+            foreach (var coordinate in coordinates)
+            {
+                String[] pointData = coordinate.Replace("(", "").Replace(")", "").Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                pointSet.Add(new Point2D(Int32.Parse(pointData[0]), Int32.Parse(pointData[1])));
+            }
+
+            return pointSet;
+        }
+
+        /// <summary>
         /// Called when testDCHull button is pressed
         /// </summary>
         private void testDCHull_Click(object sender, EventArgs e)
@@ -268,7 +294,11 @@ namespace computational_geometry_algorithm
             Clear();
             GetParameters();
 
-            var polygon = ProceduralGeneration.GenerateRandomPolygon(NumPoints, XSize, YSize);
+            var polygon = GetPointSetFromTextbox();
+
+            if (polygon == null)
+                polygon = ProceduralGeneration.GenerateRandomPolygon(NumPoints, XSize, YSize);
+
             DebugText += "Polygon generated: " + PolygonManipulation.Output(polygon) + "\r\n";
 
             //Draw the polygon at the top
