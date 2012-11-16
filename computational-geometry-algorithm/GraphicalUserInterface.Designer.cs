@@ -60,9 +60,10 @@ namespace computational_geometry_algorithm
             // 
             // testConvexHullButton
             // 
-            this.testConvexHullButton.Location = new System.Drawing.Point(742, 503);
+            this.testConvexHullButton.Location = new System.Drawing.Point(989, 619);
+            this.testConvexHullButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.testConvexHullButton.Name = "testConvexHullButton";
-            this.testConvexHullButton.Size = new System.Drawing.Size(177, 23);
+            this.testConvexHullButton.Size = new System.Drawing.Size(236, 28);
             this.testConvexHullButton.TabIndex = 0;
             this.testConvexHullButton.Text = "Test Convex Hull";
             this.testConvexHullButton.UseVisualStyleBackColor = true;
@@ -71,56 +72,63 @@ namespace computational_geometry_algorithm
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(723, 418);
+            this.label1.Location = new System.Drawing.Point(964, 514);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(90, 13);
+            this.label1.Size = new System.Drawing.Size(120, 17);
             this.label1.TabIndex = 1;
             this.label1.Text = "Number of points:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(723, 444);
+            this.label2.Location = new System.Drawing.Point(964, 546);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(40, 13);
+            this.label2.Size = new System.Drawing.Size(52, 17);
             this.label2.TabIndex = 2;
             this.label2.Text = "X Size:";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(723, 470);
+            this.label3.Location = new System.Drawing.Point(964, 578);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(40, 13);
+            this.label3.Size = new System.Drawing.Size(52, 17);
             this.label3.TabIndex = 3;
             this.label3.Text = "Y Size:";
             // 
             // numberOfPointsTextBox
             // 
-            this.numberOfPointsTextBox.Location = new System.Drawing.Point(819, 415);
+            this.numberOfPointsTextBox.Location = new System.Drawing.Point(1092, 511);
+            this.numberOfPointsTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.numberOfPointsTextBox.Name = "numberOfPointsTextBox";
-            this.numberOfPointsTextBox.Size = new System.Drawing.Size(100, 20);
+            this.numberOfPointsTextBox.Size = new System.Drawing.Size(132, 22);
             this.numberOfPointsTextBox.TabIndex = 4;
             // 
             // xSizeTextBox
             // 
-            this.xSizeTextBox.Location = new System.Drawing.Point(819, 441);
+            this.xSizeTextBox.Location = new System.Drawing.Point(1092, 543);
+            this.xSizeTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.xSizeTextBox.Name = "xSizeTextBox";
-            this.xSizeTextBox.Size = new System.Drawing.Size(100, 20);
+            this.xSizeTextBox.Size = new System.Drawing.Size(132, 22);
             this.xSizeTextBox.TabIndex = 5;
             // 
             // ySizeTextBox
             // 
-            this.ySizeTextBox.Location = new System.Drawing.Point(819, 467);
+            this.ySizeTextBox.Location = new System.Drawing.Point(1092, 575);
+            this.ySizeTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ySizeTextBox.Name = "ySizeTextBox";
-            this.ySizeTextBox.Size = new System.Drawing.Size(100, 20);
+            this.ySizeTextBox.Size = new System.Drawing.Size(132, 22);
             this.ySizeTextBox.TabIndex = 6;
             // 
             // testSingleObstacleAvoidance
             // 
-            this.testSingleObstacleAvoidance.Location = new System.Drawing.Point(742, 532);
+            this.testSingleObstacleAvoidance.Location = new System.Drawing.Point(989, 655);
+            this.testSingleObstacleAvoidance.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.testSingleObstacleAvoidance.Name = "testSingleObstacleAvoidance";
-            this.testSingleObstacleAvoidance.Size = new System.Drawing.Size(177, 23);
+            this.testSingleObstacleAvoidance.Size = new System.Drawing.Size(236, 28);
             this.testSingleObstacleAvoidance.TabIndex = 7;
             this.testSingleObstacleAvoidance.Text = "Test Single Obstacle Avoidance";
             this.testSingleObstacleAvoidance.UseVisualStyleBackColor = true;
@@ -128,9 +136,10 @@ namespace computational_geometry_algorithm
             // 
             // testMultipleObstacleAvoidance
             // 
-            this.testMultipleObstacleAvoidance.Location = new System.Drawing.Point(937, 503);
+            this.testMultipleObstacleAvoidance.Location = new System.Drawing.Point(1249, 619);
+            this.testMultipleObstacleAvoidance.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.testMultipleObstacleAvoidance.Name = "testMultipleObstacleAvoidance";
-            this.testMultipleObstacleAvoidance.Size = new System.Drawing.Size(207, 23);
+            this.testMultipleObstacleAvoidance.Size = new System.Drawing.Size(276, 28);
             this.testMultipleObstacleAvoidance.TabIndex = 8;
             this.testMultipleObstacleAvoidance.Text = "Test Multiple Obstacle Avoidance";
             this.testMultipleObstacleAvoidance.UseVisualStyleBackColor = true;
@@ -138,25 +147,28 @@ namespace computational_geometry_algorithm
             // 
             // numberOfPolygonsTextBox
             // 
-            this.numberOfPolygonsTextBox.Location = new System.Drawing.Point(1044, 415);
+            this.numberOfPolygonsTextBox.Location = new System.Drawing.Point(1392, 511);
+            this.numberOfPolygonsTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.numberOfPolygonsTextBox.Name = "numberOfPolygonsTextBox";
-            this.numberOfPolygonsTextBox.Size = new System.Drawing.Size(100, 20);
+            this.numberOfPolygonsTextBox.Size = new System.Drawing.Size(132, 22);
             this.numberOfPolygonsTextBox.TabIndex = 9;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(934, 418);
+            this.label4.Location = new System.Drawing.Point(1245, 514);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(104, 13);
+            this.label4.Size = new System.Drawing.Size(139, 17);
             this.label4.TabIndex = 10;
             this.label4.Text = "Number of polygons:";
             // 
             // testDCHull
             // 
-            this.testDCHull.Location = new System.Drawing.Point(742, 562);
+            this.testDCHull.Location = new System.Drawing.Point(989, 692);
+            this.testDCHull.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.testDCHull.Name = "testDCHull";
-            this.testDCHull.Size = new System.Drawing.Size(177, 23);
+            this.testDCHull.Size = new System.Drawing.Size(236, 28);
             this.testDCHull.TabIndex = 11;
             this.testDCHull.Text = "Test DCHull";
             this.testDCHull.UseVisualStyleBackColor = true;
@@ -164,19 +176,21 @@ namespace computational_geometry_algorithm
             // 
             // debugTextBox
             // 
-            this.debugTextBox.Location = new System.Drawing.Point(726, 27);
+            this.debugTextBox.Location = new System.Drawing.Point(968, 33);
+            this.debugTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.debugTextBox.Multiline = true;
             this.debugTextBox.Name = "debugTextBox";
             this.debugTextBox.ReadOnly = true;
-            this.debugTextBox.Size = new System.Drawing.Size(418, 342);
+            this.debugTextBox.Size = new System.Drawing.Size(556, 420);
             this.debugTextBox.TabIndex = 12;
             // 
             // stepThroughCheckBox
             // 
             this.stepThroughCheckBox.AutoSize = true;
-            this.stepThroughCheckBox.Location = new System.Drawing.Point(937, 566);
+            this.stepThroughCheckBox.Location = new System.Drawing.Point(1249, 697);
+            this.stepThroughCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.stepThroughCheckBox.Name = "stepThroughCheckBox";
-            this.stepThroughCheckBox.Size = new System.Drawing.Size(89, 17);
+            this.stepThroughCheckBox.Size = new System.Drawing.Size(117, 21);
             this.stepThroughCheckBox.TabIndex = 13;
             this.stepThroughCheckBox.Text = "Step Through";
             this.stepThroughCheckBox.UseVisualStyleBackColor = true;
@@ -184,18 +198,20 @@ namespace computational_geometry_algorithm
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(1066, 650);
+            this.label5.Location = new System.Drawing.Point(1421, 800);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(102, 13);
+            this.label5.Size = new System.Drawing.Size(135, 17);
             this.label5.TabIndex = 14;
             this.label5.Text = "Alexander Spedding";
             // 
             // githubHyperlink
             // 
             this.githubHyperlink.AutoSize = true;
-            this.githubHyperlink.Location = new System.Drawing.Point(921, 650);
+            this.githubHyperlink.Location = new System.Drawing.Point(1228, 800);
+            this.githubHyperlink.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.githubHyperlink.Name = "githubHyperlink";
-            this.githubHyperlink.Size = new System.Drawing.Size(139, 13);
+            this.githubHyperlink.Size = new System.Drawing.Size(176, 17);
             this.githubHyperlink.TabIndex = 15;
             this.githubHyperlink.TabStop = true;
             this.githubHyperlink.Text = "https://github.com/AlexDiru";
@@ -204,18 +220,20 @@ namespace computational_geometry_algorithm
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(937, 590);
+            this.label6.Location = new System.Drawing.Point(1249, 726);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(215, 13);
+            this.label6.Size = new System.Drawing.Size(283, 17);
             this.label6.TabIndex = 16;
             this.label6.Text = "To move to the next step focus the console ";
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(939, 607);
+            this.label7.Location = new System.Drawing.Point(1252, 747);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(132, 13);
+            this.label7.Size = new System.Drawing.Size(173, 17);
             this.label7.TabIndex = 17;
             this.label7.Text = "window and press any key";
             // 
@@ -223,49 +241,54 @@ namespace computational_geometry_algorithm
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(12, 9);
+            this.label8.Location = new System.Drawing.Point(16, 11);
+            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(436, 46);
+            this.label8.Size = new System.Drawing.Size(544, 58);
             this.label8.TabIndex = 18;
             this.label8.Text = "Convex Hull Algorithms";
             // 
             // sizeMultiplierTextBox
             // 
-            this.sizeMultiplierTextBox.Location = new System.Drawing.Point(1044, 441);
+            this.sizeMultiplierTextBox.Location = new System.Drawing.Point(1392, 543);
+            this.sizeMultiplierTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.sizeMultiplierTextBox.Name = "sizeMultiplierTextBox";
-            this.sizeMultiplierTextBox.Size = new System.Drawing.Size(100, 20);
+            this.sizeMultiplierTextBox.Size = new System.Drawing.Size(132, 22);
             this.sizeMultiplierTextBox.TabIndex = 20;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(934, 444);
+            this.label9.Location = new System.Drawing.Point(1245, 546);
+            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(74, 13);
+            this.label9.Size = new System.Drawing.Size(99, 17);
             this.label9.TabIndex = 21;
             this.label9.Text = "Size Multiplier:";
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(739, 594);
+            this.label10.Location = new System.Drawing.Point(985, 731);
+            this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(53, 13);
+            this.label10.Size = new System.Drawing.Size(69, 17);
             this.label10.TabIndex = 22;
             this.label10.Text = "Point Set:";
             // 
             // PointSetTextbox
             // 
-            this.PointSetTextbox.Location = new System.Drawing.Point(795, 591);
+            this.PointSetTextbox.Location = new System.Drawing.Point(1060, 727);
+            this.PointSetTextbox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.PointSetTextbox.Name = "PointSetTextbox";
-            this.PointSetTextbox.Size = new System.Drawing.Size(124, 20);
+            this.PointSetTextbox.Size = new System.Drawing.Size(164, 22);
             this.PointSetTextbox.TabIndex = 23;
             // 
             // GraphicalUserInterface
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1180, 672);
+            this.ClientSize = new System.Drawing.Size(1573, 827);
             this.Controls.Add(this.PointSetTextbox);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label9);
@@ -289,6 +312,7 @@ namespace computational_geometry_algorithm
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.testConvexHullButton);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "GraphicalUserInterface";
             this.Text = "Convex Hull Algorithms";
             this.ResumeLayout(false);

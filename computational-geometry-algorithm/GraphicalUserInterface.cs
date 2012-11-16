@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using Polygon = computational_geometry_algorithm.dc_hull.Polygon;
+using System.Diagnostics;
 
 namespace computational_geometry_algorithm
 {
@@ -26,6 +27,9 @@ namespace computational_geometry_algorithm
 
         //Pen used to draw the path
         private static Pen PathPen = new Pen(System.Drawing.Color.DarkSalmon) { Width = 5 };
+
+        //Stopwatch to record performance
+        private static Stopwatch Timer = new Stopwatch();
 
         //Size of the path nodes (pixels)
         private static Int32 PathNodeSize = 8;
@@ -148,11 +152,99 @@ namespace computational_geometry_algorithm
             debugTextBox.Text = DebugText;
         }
 
+        private void TimeConvexHull()
+        {
+            GetParameters();
+            DebugText = "";
+            Clear();
+            for (int i = 0; i < 7; i++)
+            {
+                var polygon = ProceduralGeneration.GenerateRandomPolygon(NumPoints, XSize, YSize);
+
+                //Draw Polygon
+                //DrawPolygon(ConvexHull.Solve(map.Polygons.First()), true, GraphicalXOffset, GraphicalYOffset);
+                //DrawPolygonByPoints(PolygonManipulation.ConvertPolygon(map.Polygons.First(), SizeMultiplier).ToArray(), GraphicalXOffset, GraphicalYOffset);
+
+                Timer.Restart();
+                var p = ConvexHull.Solve(polygon);
+                Timer.Stop();
+                DebugText += "Time: " + Timer.Elapsed + " | " + Timer.ElapsedMilliseconds + "\r\n";
+            }
+            DrawDebugText();
+        }
+
+        /// <summary>
+        /// Times 7 DC Hull algorithms
+        /// </summary>
+        private void TimeDCHull()
+        {
+            GetParameters();
+            DebugText = "";
+            Clear();
+            for (int i = 0; i < 7; i++)
+            {
+                var polygon = ProceduralGeneration.GenerateRandomPolygon(NumPoints, XSize, YSize);
+
+                Timer.Restart();
+                var p = DCHull.Solve(polygon);
+                Timer.Stop();
+
+                DebugText += "Time: " + Timer.Elapsed + " | " + Timer.ElapsedMilliseconds + "\r\n";
+            }
+            DrawDebugText();
+        }
+
+        /// <summary>
+        /// Times 7 Single Obstacle pathfinding algorithms
+        /// </summary>
+        private void TimeSingleObstacle()
+        {
+            GetParameters();
+            DebugText = "";
+            Clear();
+            for (int i = 0; i < 7; i++)
+            {
+                var map = ProceduralGeneration.GenerateSingleObstacleMap(NumPoints, XSize, YSize);
+
+                Timer.Restart();
+                var path = PolygonManipulation.ConvertPolygon(map.SolveMap(), SizeMultiplier, GraphicalXOffset, GraphicalYOffset);
+                Timer.Stop();
+                
+                DebugText += "Time: " + Timer.Elapsed + " | " + Timer.ElapsedMilliseconds + "\r\n";
+            }
+            DrawDebugText();
+        }
+
+        /// <summary>
+        /// Times 7 Multiple Obstacle pathfinding algorithms
+        /// </summary>
+        private void TimeMultpleObstacle()
+        {
+            GetParameters();
+            DebugText = "";
+            Clear();
+            for (int i = 0; i < 7; i++)
+            {
+
+                var map = ProceduralGeneration.GenerateMultipleObstacleMap(NumPolygons, NumPoints, XSize, YSize);
+
+                Timer.Restart();
+                var path = PolygonManipulation.ConvertPolygon(map.SolveMap(), SizeMultiplier, GraphicalXOffset, GraphicalYOffset); 
+                Timer.Stop();
+
+                DebugText += "Time: " + Timer.Elapsed + " | " + Timer.ElapsedMilliseconds + "\r\n";
+            }
+            DrawDebugText();
+        }
+
         /// <summary>
         /// Called when the testConvexHullButton is clicked
         /// </summary>
         private void TestConvexHullButtonClick(object sender, EventArgs e)
         {
+            TimeConvexHull();
+            return;
+
             Clear();
             GetParameters();
 
@@ -169,7 +261,11 @@ namespace computational_geometry_algorithm
 
             //Draw the convex hull below
             Int32 xOffset = Convert.ToInt32(XSize * SizeMultiplier * 1.5) + GraphicalXOffset;
+            Timer.Restart();
             List<Point2D> convexHull = ConvexHull.Solve(polygon, true, GraphicalYOffset + (Convert.ToInt32(YSize * SizeMultiplier * 1.5)), GraphicalXOffset, xOffset);
+            Timer.Stop();
+            DebugText = "Time: " + Timer.Elapsed + "\r\n" + DebugText;
+            DebugText = "Time: " + Timer.Elapsed.Milliseconds + "ms\r\n" + DebugText;
             DrawPolygon(convexHull, true, xOffset, GraphicalYOffset);
             DrawPolygon(polygon, false, xOffset, GraphicalYOffset, new SolidBrush(System.Drawing.Color.LightPink));
             DrawPolygon(convexHull, false, xOffset, GraphicalYOffset);
@@ -182,8 +278,14 @@ namespace computational_geometry_algorithm
             DrawDebugText();
         }
 
+        /// <summary>
+        /// Called when the Single Obstacle pathfinding button is pressed
+        /// </summary>
         private void TestSingleObstacleAvoidanceClick(object sender, EventArgs e)
         {
+            TimeSingleObstacle();
+            return;
+
             Clear();
             GetParameters();
 
@@ -194,7 +296,11 @@ namespace computational_geometry_algorithm
             DrawPolygon(ConvexHull.Solve(map.Polygons.First()),true, GraphicalXOffset, GraphicalYOffset);
             DrawPolygonByPoints(PolygonManipulation.ConvertPolygon(map.Polygons.First(), SizeMultiplier).ToArray(), GraphicalXOffset, GraphicalYOffset);
 
+            Timer.Restart();
             var path = PolygonManipulation.ConvertPolygon(map.SolveMap(), SizeMultiplier, GraphicalXOffset, GraphicalYOffset);
+            Timer.Stop();
+            DebugText = "Time: " + Timer.Elapsed + "\r\n" + DebugText;
+            DebugText = "Time: " + Timer.Elapsed.Milliseconds + "ms\r\n" + DebugText;
 
             //Draw a line for the path
             for (int i = 0; i < path.Count - 1; i++)
@@ -224,6 +330,9 @@ namespace computational_geometry_algorithm
         /// </summary>
         private void TestMultipleObstacleAvoidanceClick(object sender, EventArgs e)
         {
+            TimeMultpleObstacle();
+            return;
+
             Clear();
             GetParameters();
 
@@ -237,7 +346,10 @@ namespace computational_geometry_algorithm
                 DrawPolygonByPoints(PolygonManipulation.ConvertPolygon(polygon, SizeMultiplier, GraphicalXOffset, GraphicalYOffset).ToArray());
             }
 
-            var path = PolygonManipulation.ConvertPolygon(map.SolveMap(), SizeMultiplier, GraphicalXOffset, GraphicalYOffset);
+            Timer.Restart();
+            var path = PolygonManipulation.ConvertPolygon(map.SolveMap(), SizeMultiplier, GraphicalXOffset, GraphicalYOffset); 
+            DebugText = "Time: " + Timer.Elapsed + "\r\n" + DebugText;
+            DebugText = "Time: " + Timer.Elapsed.Milliseconds + "ms\r\n" + DebugText;
 
 
             //Draw a line for the path
@@ -291,6 +403,9 @@ namespace computational_geometry_algorithm
         /// </summary>
         private void testDCHull_Click(object sender, EventArgs e)
         {
+            TimeDCHull();
+            return;
+
             Clear();
             GetParameters();
 
@@ -312,7 +427,10 @@ namespace computational_geometry_algorithm
             //Draw the convex hull below
             DCHull.XOffset = xOffset;
             DCHull.YOffset =  GraphicalYOffset;
-            List<Point2D> convexHull = DCHull.Solve(polygon, stepThroughCheckBox.Checked);
+            Timer.Restart();
+            List<Point2D> convexHull = DCHull.Solve(polygon, stepThroughCheckBox.Checked); Timer.Stop();
+            DebugText = "Time: " + Timer.Elapsed + "\r\n" + DebugText;
+            DebugText = "Time: " + Timer.Elapsed.Milliseconds + "ms\r\n" + DebugText;
 
             DrawPolygon(convexHull, true, xOffset, GraphicalYOffset);
             DrawPolygon(polygon, false, xOffset, GraphicalYOffset, new SolidBrush(System.Drawing.Color.LightPink));

@@ -283,6 +283,9 @@ namespace computational_geometry_algorithm
             return Polygon.Get(wiredPolygon);
         }
 
+        /// <summary>
+        /// Checks if the gradient of ab = cd
+        /// </summary>
         public static Boolean GradientEquals(Point2D a, Point2D b, Point2D c, Point2D d)
         {
             float run1 = b.X - a.X;
