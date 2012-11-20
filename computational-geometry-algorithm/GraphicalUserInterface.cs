@@ -242,8 +242,8 @@ namespace computational_geometry_algorithm
         /// </summary>
         private void TestConvexHullButtonClick(object sender, EventArgs e)
         {
-            TimeConvexHull();
-            return;
+            //TimeConvexHull();
+            //return;
 
             Clear();
             GetParameters();
@@ -283,8 +283,8 @@ namespace computational_geometry_algorithm
         /// </summary>
         private void TestSingleObstacleAvoidanceClick(object sender, EventArgs e)
         {
-            TimeSingleObstacle();
-            return;
+            //TimeSingleObstacle();
+            //return;
 
             Clear();
             GetParameters();
@@ -330,8 +330,8 @@ namespace computational_geometry_algorithm
         /// </summary>
         private void TestMultipleObstacleAvoidanceClick(object sender, EventArgs e)
         {
-            TimeMultpleObstacle();
-            return;
+            //TimeMultpleObstacle();
+            //return;
 
             Clear();
             GetParameters();
@@ -403,8 +403,8 @@ namespace computational_geometry_algorithm
         /// </summary>
         private void testDCHull_Click(object sender, EventArgs e)
         {
-            TimeDCHull();
-            return;
+            //TimeDCHull();
+            //return;
 
             Clear();
             GetParameters();
@@ -449,7 +449,7 @@ namespace computational_geometry_algorithm
             System.Diagnostics.Process.Start(githubHyperlink.Text);
         }
 
-        private void testAllFarthestSegments_Click(object sender, EventArgs e)
+        /*private void testAllFarthestSegments_Click(object sender, EventArgs e)
         {
             Clear();
             GetParameters();
@@ -465,6 +465,64 @@ namespace computational_geometry_algorithm
             //GraphicsObject.DrawString("Point Set", new Font(FontFamily.GenericMonospace, 12), TextBrush, GraphicalXOffset, GraphicalYOffset - 30);
 
             AllFarthestSegments.Solve(polygon);
+        }*/
+
+        private void testAllFarthestSegments_Click_1(object sender, EventArgs e)
+        {
+            GetParameters();
+            Clear();
+
+            var polygon = ProceduralGeneration.GenerateRandomPolygon(NumPoints, XSize, YSize);
+            DebugText += "Polygon generated: " + PolygonManipulation.Output(polygon) + "\r\n";
+
+            //Compute the convex hull
+            var convexHull = ConvexHull.Solve(polygon);
+            DebugText += "Convex hull: " + PolygonManipulation.Output(convexHull) + "\r\n";
+
+            GraphicalUserInterface.DrawPolygon(convexHull, false, 100, 100);
+
+            //Get a point not in the convex hull
+            Point2D point = null;
+            foreach (var vertex in polygon)
+            {
+                if (!convexHull.Contains(vertex))
+                    point = vertex;
+            }
+
+            //Get the fartest segment from the point
+            Pen pen = new Pen(Color.Blue) { Width = 2 };
+      
+            float maxDistance = 0;
+            int segmentIndex = 0;
+            for (int i = 0; i < convexHull.Count - 1; i++)
+            {
+                //Get the smaller distance
+                float d1 = ConvexHull.GetDistanceSquared(convexHull[i], point);
+                float d2 = ConvexHull.GetDistanceSquared(convexHull[i+1], point);
+                float distance = d1 > d2 ? d2 : d1;
+
+                if (distance > maxDistance)
+                {
+                    maxDistance = distance;
+                    segmentIndex = i;
+                }
+
+                GraphicalUserInterface.GraphicsObject.DrawLine(pen, convexHull[i].Convert(100, 100, GraphicalUserInterface.SizeMultiplier), convexHull[i + 1].Convert(100, 100, GraphicalUserInterface.SizeMultiplier));
+            }
+            GraphicalUserInterface.GraphicsObject.DrawLine(pen, convexHull[convexHull.Count - 1].Convert(100, 100, GraphicalUserInterface.SizeMultiplier), convexHull[0].Convert(100, 100, GraphicalUserInterface.SizeMultiplier));
+           
+
+
+            //Draw the point and the farthest segment
+            GraphicalUserInterface.DrawPolygon(new Point2D[] { point }.ToList(), false, 100, 100, new SolidBrush(Color.Black));
+
+            //Draw segment
+            Pen path = new Pen(Color.Black) { Width = 7 };
+            GraphicalUserInterface.GraphicsObject.DrawLine(path, convexHull[segmentIndex].Convert(100, 100, GraphicalUserInterface.SizeMultiplier), convexHull[segmentIndex+1].Convert(100, 100, GraphicalUserInterface.SizeMultiplier));
+
+            DebugText += "Closest segment from " + point.Output() + " is " + convexHull[segmentIndex].Output() + "->" + convexHull[segmentIndex + 1].Output();
+
+            DrawDebugText();
         }
     }
 }
